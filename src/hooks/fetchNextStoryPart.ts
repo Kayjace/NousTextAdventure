@@ -379,6 +379,9 @@ const fetchNextStoryPartAndOptions = async (
       - Include at least one moral and one immoral option when appropriate
       - Make sure each option leads to significantly different potential story branches
       
+      IMPORTANT: When specifying risk levels, always use the exact English terms "low", "medium", or "high".
+      IMPORTANT: When specifying moral alignment, always use the exact English terms "moral", "immoral", or "neutral".
+      
       Strictly put your responses in this JSON format:
       {
         "storySegment": "Text of the next story segment, 65-200 words",
@@ -407,7 +410,11 @@ const fetchNextStoryPartAndOptions = async (
         response[0]
       );
 
+      console.log("Original options from AI:", JSON.stringify(responseObject.options, null, 2));
+      
       const filteredOptions = filterOptionsNew(responseObject.options);
+      console.log("Filtered options:", JSON.stringify(filteredOptions, null, 2));
+      
       responseObject.options = filteredOptions;
 
       return responseObject;

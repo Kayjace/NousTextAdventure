@@ -10,15 +10,24 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  
+  // 강제 페이지 이동 함수
+  const forceNavigate = (path: string) => {
+    window.location.href = path;
+  };
 
   return (
     <div className="layout">
       <header className="header">
         <div className="header-content">
-          <Link to="/" className="home-button">
-            {t('Home')}
-          </Link>
+          <div className="nav-buttons">
+            <a href="/" onClick={(e) => { e.preventDefault(); forceNavigate('/'); }} className="nav-button">
+              {t('Home')}
+            </a>
+            <a href="/leaderboard" onClick={(e) => { e.preventDefault(); forceNavigate('/leaderboard'); }} className="nav-button">
+              {t('Leaderboard')}
+            </a>
+          </div>
           <h1 className="site-title">
             <img src="/logo.webp" alt="Nous Logo" className="site-logo" />
             {t('Nous Text Adventure')}

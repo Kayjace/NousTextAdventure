@@ -1,13 +1,13 @@
 // GameLoadOrCreate.tsx
 import React, { useContext } from 'react';
-import { useTranslation } from 'react-i18next'; // i18n 훅 추가
+import { useTranslation } from 'react-i18next';
 import { AppContext } from '../AppContext';
 import MyStories from './MyStories';
 import './GameLoadOrCreate.css';
 
 const GameLoadOrCreate: React.FC = () => {
   const { setState } = useContext(AppContext);
-  const { t } = useTranslation(); // 번역 함수 가져오기
+  const { t } = useTranslation();
 
   const handleCreate = () => {
     setState(prevState => ({ ...prevState, gameState: 'genreSelection' }));
@@ -15,10 +15,33 @@ const GameLoadOrCreate: React.FC = () => {
 
   return (
     <div className="center">
-      <button className="game-button shine" onClick={handleCreate}>
-        {t('Start New Game')} {/* 하드코딩된 텍스트를 t() 함수로 감싸기 */}
-      </button>
-      <MyStories />
+      <div className="main-actions">
+        <div className="action-card">
+          <div className="action-card-icon">🎮</div>
+          <h2>{t('New Adventure')}</h2>
+          <p>{t('Start a fresh journey with new characters, worlds, and stories.')}</p>
+          <button className="game-button shine" onClick={handleCreate}>
+            {t('Start New Game')}
+          </button>
+        </div>
+        
+        <div className="action-card">
+          <div className="action-card-icon">📚</div>
+          <h2 className="smaller-title">{t('Continue Adventure')}</h2>
+          <p>{t('Resume your previous adventures and continue your journey.')}</p>
+          <button 
+            className="game-button"
+            onClick={() => document.getElementById('saved-stories-section')?.scrollIntoView({ behavior: 'smooth' })}
+          >
+            {t('View Saved Games')}
+          </button>
+        </div>
+      </div>
+      
+      <div id="saved-stories-section" className="stories-section">
+        <h2>{t('Your Saved Adventures')}</h2>
+        <MyStories />
+      </div>
     </div>
   );
 };

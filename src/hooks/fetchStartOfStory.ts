@@ -52,6 +52,11 @@ const fetchStoryStart = async (
 
     둘째, 이야기를 계속할 2-4개의 게임 옵션을 만드세요. 각 옵션(10-30단어)은 플레이어가 장면을 탐색하거나 캐릭터와 상호 작용할 수 있게 해야 합니다. 각 옵션이 게임의 설정에 맞고, 다른 이야기 경로로 이어지며, 위험 수준(낮음, 중간, 높음)을 포함하는지 확인하세요. 가능하다면 "위험한" 옵션을 포함하세요.
     현재 장면에 특화되고 독특한 옵션을 만들고, 옵션 생성에 흔한 트로프를 피하세요.
+    
+    각 옵션에 대해 다음 사항을 포함하세요:
+    - 위험 수준(낮음, 중간, 높음)
+    - 도덕적 정렬(도덕적, 비도덕적, 중립적)
+    - 가능한 경우 캐릭터 특성과의 일치 여부(traitAlignment)
 
     응답을 다음 JSON 형식으로 엄격하게 작성하세요:
     {
@@ -60,6 +65,8 @@ const fetchStoryStart = async (
         "option1": { 
           "text": "{옵션 텍스트, 10-30단어}",
           "risk": "{위험 수준, 낮음, 중간, 높음}",
+          "alignment": "{도덕적, 비도덕적, 또는 중립적}",
+          "traitAlignment": "{선택 사항 - 이 옵션이 일치하는 캐릭터 특성}"
         },
         // ... 최대 option4까지 동일한 형식으로
       }
@@ -84,6 +91,11 @@ const fetchStoryStart = async (
 
     Second, create 2 to 4 game options that continue the story. Each option (10-30 words) should allow the player to explore the scene or interact with characters. Make sure each option fits the game's setting, leads to different story paths, and includes a risk level (low, medium, high). Include a "risky" option if possible.
     Try to make options specific and unique to the current scene, also avoid common tropes for creating options.
+    
+    For each option, include:
+    - Risk level (low, medium, high)
+    - Moral alignment (moral, immoral, or neutral)
+    - Character trait alignment where applicable (traitAlignment)
 
     Strictly put your responses in this JSON format:
     {
@@ -92,6 +104,8 @@ const fetchStoryStart = async (
         "option1": { 
           "text": "{option text, 10-30 words}",
           "risk": "{risk level, low, medium, high}",
+          "alignment": "{moral, immoral, or neutral}",
+          "traitAlignment": "{optional - name of character trait this aligns with}"
         },
         // ... up to option4 in the same format
       }
@@ -112,18 +126,24 @@ const fetchStoryStart = async (
       // 옵션 객체를 Option 인터페이스에 맞게 변환
       const processedOptions: { [key: string]: Option } = {};
       
+      console.log("Original start options from AI:", JSON.stringify(responseObject.options, null, 2));
+      
       // 각 옵션에 필수 속성 추가
-      Object.entries(responseObject.options).forEach(([key, option]) => {
+      Object.entries(responseObject.options).forEach(([key, option]: [string, any]) => {
         processedOptions[key] = {
           text: option.text,
           risk: option.risk,
-          alignment: 'neutral' as MoralAlignment, // 기본값으로 'neutral' 설정
-          // traitAlignment는 선택적이므로 생략 가능
+          alignment: (option.alignment || 'neutral') as MoralAlignment, // 기본값으로 'neutral' 설정
+          traitAlignment: option.traitAlignment || '' // 명시적으로 빈 문자열 설정
         };
       });
 
+      console.log("Processed start options:", JSON.stringify(processedOptions, null, 2));
+
       // 변환된 옵션을 filterOptionsNew에 전달
       const filteredOptions = filterOptionsNew(processedOptions);
+      console.log("Filtered start options:", JSON.stringify(filteredOptions, null, 2));
+      
       responseObject.options = filteredOptions;
 
       return responseObject; // Return response on success

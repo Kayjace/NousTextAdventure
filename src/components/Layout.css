@@ -12,6 +12,10 @@
   padding: 1rem;
   border-bottom: 1px solid #0f0;
   margin-bottom: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
 }
 
 .header-content {
@@ -23,6 +27,27 @@
   padding: 0 1rem;
 }
 
+.nav-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.nav-button {
+  background-color: #000;
+  color: #0f0;
+  padding: 0.5rem 1rem;
+  border: 1px solid #0f0;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.nav-button:hover {
+  background-color: #030;
+}
+
+/* Legacy support for old home-button class */
 .home-button {
   background-color: #000;
   color: #0f0;
@@ -55,12 +80,15 @@
 .main-content {
   flex-grow: 1;
   padding: 1rem;
+  padding-top: 1.5rem;
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+  z-index: 1;
 }
 
 @media (max-width: 768px) {
@@ -71,5 +99,9 @@
   
   .site-title {
     font-size: 1.2rem;
+  }
+  
+  .nav-buttons {
+    margin-bottom: 0.5rem;
   }
 } 

@@ -2,12 +2,17 @@
   position: relative;
   z-index: 1;
   text-align: left;
-  top: 0;
   margin-bottom: 1em;
-  height: 90vh;
-  width: 70vw;
-  padding: 0 1em 1em 1em;
-  /* overflow-y: hidden; */
+  height: 80vh;
+  width: 60vw;
+  max-width: 800px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #0f0;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+  background-color: rgba(0, 10, 0, 0.8);
 }
 
 .game-output-info {
@@ -16,27 +21,155 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 65px; /* Changed to auto */
-  background-color: black;
-  padding: 0.5rem 1rem;
+  padding: 0.7rem 1.2rem;
   box-sizing: border-box;
   font-weight: bold;
   z-index: 10;
-  flex-wrap: wrap; /* Added flex-wrap */
+  background-color: rgba(0, 20, 0, 0.9);
+  border-bottom: 1px solid #0f0;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  justify-content: space-between;
 }
 
-.game-output-info p:nth-child(1) {
-  flex: 1; /* Added flex property */
-  margin-left: 1rem; /* Replaced position and left with margin-left */
-}
-
-.game-output-info p:nth-child(2) {
-  flex: 1; /* Added flex property */
-  text-align: center; /* Replaced position and left with text-align */
+.game-output-info p {
+  margin: 0;
+  color: #0f0;
+  font-size: 1.1rem;
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
 }
 
 .game-output-content {
-  position: relative; /* Add this line */
-  height: calc(100% - 65px); /* Add this line to set the height, 45px is the approximate height of .game-output-info */
-  overflow-y: auto; /* Add this line to make it scrollable */
+  position: relative;
+  height: calc(100% - 50px);
+  overflow-y: auto;
+  padding: 1.2rem 1.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: #0f0 #001400;
+}
+
+.game-output-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.game-output-content::-webkit-scrollbar-track {
+  background: #001400;
+}
+
+.game-output-content::-webkit-scrollbar-thumb {
+  background-color: #0f0;
+  border-radius: 4px;
+}
+
+.game-output-content p {
+  margin: 0 0 1.2rem 0;
+  line-height: 1.7;
+  font-size: 1.05rem;
+  color: #afa;
+  text-shadow: 0 0 2px rgba(0, 255, 0, 0.3);
+}
+
+/* 사용자 선택 스타일 */
+.game-output-content .user-choice {
+  color: #0f0;
+  background-color: rgba(0, 40, 0, 0.4);
+  border-left: 3px solid #0f0;
+  padding: 0.7rem 1rem;
+  margin: 0.5rem 0 1.2rem 0;
+  border-radius: 4px;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.1);
+  position: relative;
+}
+
+/* 결과 표시기 스타일 */
+.outcome-indicator {
+  display: inline-block;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.75rem;
+  padding: 0.2rem 0.35rem;
+  border-radius: 3px;
+  font-weight: bold;
+  color: white;
+}
+
+.outcome-success {
+  background-color: rgba(0, 200, 0, 0.9);
+}
+
+.outcome-partial {
+  background-color: rgba(255, 180, 0, 0.9);
+  color: #000;
+}
+
+.outcome-failure {
+  background-color: rgba(220, 0, 0, 0.9);
+}
+
+/* 텍스트가 옵션 버튼보다 넓게 표시되도록 함 */
+.game-output-content > div {
+  width: 100%;
+}
+
+/* 미디어 쿼리로 반응형 지원 */
+@media (max-width: 768px) {
+  .game-output {
+    width: 95vw;
+    height: 75vh;
+  }
+  
+  .game-output-content {
+    padding: 1rem;
+  }
+  
+  .game-output-content p {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  .game-output-content .user-choice {
+    padding: 0.6rem 0.8rem;
+    margin: 0.4rem 0 1rem 0;
+  }
+  
+  .outcome-indicator {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.3rem;
+    right: 8px;
+  }
+}
+
+/* 게임 저장 버튼 스타일 */
+.game-output-actions {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 0;
+  border-top: 1px solid rgba(0, 255, 0, 0.3);
+  background-color: rgba(0, 20, 0, 0.9);
+}
+
+.save-button {
+  background-color: rgba(0, 50, 0, 0.8);
+  color: #0f0;
+  border: 1px solid #0f0;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.save-button:hover {
+  background-color: rgba(0, 80, 0, 0.9);
+  transform: translateY(-1px);
+  box-shadow: 0 0 8px rgba(0, 255, 0, 0.4);
+}
+
+.save-button:active {
+  transform: translateY(1px);
 }

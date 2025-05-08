@@ -91,7 +91,10 @@ const fetchEndingStoryPartAndOptions = async (
     
     이야기를 진행하거나 결론짓는 것뿐만 아니라 각 결정과 이야기 발전을 기억에 남고 영향력 있게 만들어 플레이어의 경험을 풍부하게 하는 내러티브를 전달하는 데 집중하세요.
     
-    계속할 경우, 다양한 위험 수준과 도덕적 정렬을 가진 2-4개의 옵션을 제공하세요.
+    계속할 경우, 다양한 위험 수준과 도덕적 정렬을 가진 2-4개의 옵션을 제공하세요:
+    - 캐릭터의 특성과 일치하는 옵션을 하나 이상 포함하세요(traitAlignment로 표시)
+    - 다양한 위험 수준(낮음, 중간, 높음)의 옵션을 포함하세요
+    - 적절한 경우 도덕적 옵션과 비도덕적 옵션을 각각 하나 이상 포함하세요
     
     다음 JSON 형식으로 응답을 엄격하게 작성하세요:
     {
@@ -141,7 +144,10 @@ const fetchEndingStoryPartAndOptions = async (
     
     Focus on delivering a narrative that not only advances or concludes the story but also enriches the player's experience by making each decision and story development memorable and impactful.
     
-    If continuing, provide 2-4 options with varying risk levels and moral alignments.
+    If continuing, provide 2-4 options with varying risk levels and moral alignments:
+    - Include at least one option aligned with the character's traits (mark with traitAlignment)
+    - Include options with varying risk levels (low, medium, high)
+    - Include at least one moral and one immoral option when appropriate
     
     Strictly put your responses in this JSON format:
     {
@@ -160,31 +166,25 @@ const fetchEndingStoryPartAndOptions = async (
     `;
   }
 
-  let response;
-  let responseObject: NextStoryPart = {
-    storySegment: "",
-    options: {},
-    isFinal: false,
-    outcome: 'success', // 기본 결과
-    scenarioType: 'standard' // 기본 시나리오 유형
-  };
-  let success = false;
-
-  while (!success) {
+  while (true) {
     try {
-      response = await chatGPTRequest(prompt, apiKey, provider);
-      responseObject = processJson<NextStoryPart>(response[0]);
+      const response = await chatGPTRequest(prompt, apiKey, provider);
+      const responseObject: NextStoryPart = processJson<NextStoryPart>(
+        response[0]
+      );
 
+      console.log("Original ending options from AI:", JSON.stringify(responseObject.options, null, 2));
+      
       const filteredOptions = filterOptionsNew(responseObject.options);
+      console.log("Filtered ending options:", JSON.stringify(filteredOptions, null, 2));
+      
       responseObject.options = filteredOptions;
 
-      success = true;
-    } catch (error) {
-      console.error("Error processing response, retrying request...", error);
+      return responseObject;
+    } catch (error: any) {
+      console.error("Error processing ending response retrying");
     }
   }
-
-  return responseObject;
 };
 
 const fetchDetailedStorySummary = async (

@@ -6,6 +6,41 @@
   font-family: 'Courier New', Courier, monospace;
 }
 
+/* 오류 메시지 스타일 */
+.profile-error-message {
+  background-color: rgba(150, 0, 0, 0.1);
+  border: 1px solid #f00;
+  color: #f77;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  font-family: 'Courier New', Courier, monospace;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.profile-error-message p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.error-action-button {
+  background-color: #000;
+  color: #f77;
+  border: 1px solid #f00;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-family: 'Courier New', Courier, monospace;
+  align-self: flex-start;
+}
+
+.error-action-button:hover {
+  background-color: #300;
+}
+
 .profile-header {
   margin-bottom: 2rem;
   border-bottom: 1px solid #0f0;
@@ -244,4 +279,35 @@
   .stats-grid {
     grid-template-columns: 1fr;
   }
+  
+  .profile-error-message {
+    padding: 0.75rem;
+  }
+}
+
+/* 프로필 로딩 스타일 */
+.profile-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 40vh;
+  text-align: center;
+  padding: 2rem;
+  background-color: #000;
+  border: 1px solid #0f0;
+  border-radius: 8px;
+  color: #0f0;
+}
+
+/* 대게 다음과 같은 클래스들에 after 가상요소로 화살표가 추가됨 */
+.wallet-info .value::after,
+.user-info .wallet-info .value::after,
+.verification-status .value::after,
+.verification-info .value::after {
+  display: none !important; /* 화살표를 표시하지 않도록 설정 */
+}
+
+/* 모든 after 가상 요소 대상으로 화살표 제거 */
+.user-info *::after {
+  display: none !important;
 } 

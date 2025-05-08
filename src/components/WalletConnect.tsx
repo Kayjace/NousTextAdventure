@@ -3,21 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ethers } from 'ethers';
 import './WalletConnect.css';
+import { supabase, authenticateWithWallet } from '../utils/supabaseClient';
+import { getNonce, generateSignMessage, verifySignature, createAuthToken, clearAuthenticationData } from '../utils/walletAuth';
 
-// Web3 타입 확장 - window.ethereum
-declare global {
-  interface Window {
-    ethereum?: any;
-  }
-}
-
-// 서명 메시지 생성
-const generateSignMessage = (address: string): string => {
-  const timestamp = Date.now();
-  return `Welcome to Nous Text Adventure!\n\nThis signature is used to verify you are the owner of this address: ${address}\n\nTimestamp: ${timestamp}\n\nThis signature does not cost any gas fees and does not authorize any transactions.`;
-};
-
-// 지갑 연결 컴포넌트
+// Wallet connection component
 const WalletConnect: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -30,55 +19,29 @@ const WalletConnect: React.FC = () => {
   const [isSigningMessage, setIsSigningMessage] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // 지갑 연결 체크
+  // Check wallet connection
   useEffect(() => {
-    // 로컬 스토리지에서 연결 상태 확인
-    const checkConnection = async () => {
-      if (window.ethereum) {
-        try {
-          const ethProvider = new ethers.BrowserProvider(window.ethereum);
-          const accounts = await ethProvider.listAccounts();
-          
-          if (accounts.length > 0) {
-            const address = accounts[0].address;
-            
-            // 서명 확인
-            const verifiedStatus = localStorage.getItem(`signature_verified_${address}`);
-            if (verifiedStatus === 'true') {
-              // 이미 서명된 지갑이라면 연결 상태로 설정
-              setAccount(address);
-              setIsConnected(true);
-              setIsVerified(true);
-              setDisplayAddress(`${address.substring(0, 6)}...${address.substring(address.length - 4)}`);
-              setProvider(ethProvider);
-            } else {
-              // 지갑은 연결되어 있지만 서명은 되지 않은 경우, 서명 요청
-              try {
-                await requestSignature(address, ethProvider);
-              } catch (error) {
-                console.error('자동 서명 요청 중 오류:', error);
-                // 서명 거부 시 연결을 취소한 것으로 간주
-              }
-            }
-          }
-        } catch (error) {
-          console.error('지갑 연결 확인 중 오류:', error);
-        }
-      }
-    };
-
-    checkConnection();
-
-    // 이벤트 구독: 계정 변경
-    if (window.ethereum) {
-      window.ethereum.on('accountsChanged', async (accounts: string[]) => {
+    // 이벤트 리스너를 위한 flag
+    let mounted = true;
+    // 계정 변경 이벤트 한 번만 처리하도록 플래그 추가
+    let isAccountChangeProcessing = false;
+    
+    // 이벤트 핸들러 정의
+    const handleAccountsChanged = async (accounts: string[]) => {
+      // 이미 처리 중인 경우 중복 실행 방지
+      if (isAccountChangeProcessing || !mounted) return;
+      
+      try {
+        isAccountChangeProcessing = true;
+        console.log('계정 변경 감지:', accounts);
+        
         if (accounts.length > 0) {
           const address = accounts[0];
           
-          // 계정 변경 시 서명 상태 확인
+          // Check signature status when account changes
           const verifiedStatus = localStorage.getItem(`signature_verified_${address}`);
           if (verifiedStatus === 'true') {
-            // 이미 서명된 지갑이라면 바로 연결
+            // If already signed, connect immediately
             setAccount(address);
             setIsConnected(true);
             setIsVerified(true);
@@ -89,87 +52,203 @@ const WalletConnect: React.FC = () => {
               setProvider(new ethers.BrowserProvider(window.ethereum));
             }
           } else {
-            // 새 계정이라면 서명 요청
-            if (window.ethereum) {
+            // 새 계정에 대해 서명 요청 전 확인
+            if (window.ethereum && !isSigningMessage) {
               const ethProvider = new ethers.BrowserProvider(window.ethereum);
               try {
                 await requestSignature(address, ethProvider);
               } catch (error) {
-                console.error('계정 변경 후 서명 요청 중 오류:', error);
-                handleDisconnect(); // 서명 거부 시 연결 취소
+                console.error('Error requesting signature after account change:', error);
+                handleDisconnect(); // Cancel connection if signature is rejected
               }
             }
           }
         } else {
           handleDisconnect();
         }
-      });
-    }
-
-    // 클릭 이벤트 리스너 추가
+      } finally {
+        // 처리 완료 후 플래그 해제
+        if (mounted) {
+          isAccountChangeProcessing = false;
+        }
+      }
+    };
+    
+    // 클릭 이벤트 핸들러
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setShowDropdown(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      // 컴포넌트 언마운트 시 이벤트 해제
+    // 연결 상태 확인
+    const checkConnection = async () => {
+      // 현재 지갑 주소 확인
+      const currentWalletAddress = localStorage.getItem('current_wallet_address');
+      
       if (window.ethereum) {
-        window.ethereum.removeListener('accountsChanged', () => {});
+        try {
+          const ethProvider = new ethers.BrowserProvider(window.ethereum);
+          
+          // 먼저 로컬 스토리지에서 인증 상태 확인
+          if (currentWalletAddress) {
+            const verifiedStatus = localStorage.getItem(`signature_verified_${currentWalletAddress}`);
+            const authToken = localStorage.getItem(`auth_token_${currentWalletAddress}`);
+            
+            if (verifiedStatus === 'true' && authToken) {
+              // 로컬 스토리지에 인증 정보가 있으면 연결 상태 설정
+              setAccount(currentWalletAddress);
+              setIsConnected(true);
+              setIsVerified(true);
+              setDisplayAddress(`${currentWalletAddress.substring(0, 6)}...${currentWalletAddress.substring(currentWalletAddress.length - 4)}`);
+              setProvider(ethProvider);
+              console.log('Found authenticated wallet in localStorage:', currentWalletAddress);
+              return; // 로컬 스토리지에서 인증 정보를 찾았으므로 여기서 종료
+            }
+          }
+          
+          // 로컬 스토리지에 인증 정보가 없으면 현재 연결된 계정 확인
+          try {
+            const accounts = await ethProvider.listAccounts();
+            
+            if (accounts.length > 0) {
+              const address = accounts[0].address;
+              
+              // 이전에 연결된 지갑과 현재 지갑이 다른 경우 초기화
+              if (currentWalletAddress && currentWalletAddress.toLowerCase() !== address.toLowerCase()) {
+                console.log('지갑 주소가 변경되었습니다. 인증 상태를 초기화합니다.');
+                handleDisconnect();
+                return;
+              }
+              
+              // Check signature verification status
+              const verifiedStatus = localStorage.getItem(`signature_verified_${address}`);
+              const authToken = localStorage.getItem(`auth_token_${address}`);
+              
+              if (verifiedStatus === 'true' && authToken) {
+                // If wallet is already verified, set connection state
+                setAccount(address);
+                setIsConnected(true);
+                setIsVerified(true);
+                setDisplayAddress(`${address.substring(0, 6)}...${address.substring(address.length - 4)}`);
+                setProvider(ethProvider);
+                console.log('Found previously verified wallet:', address);
+              } else {
+                // Wallet is connected but not verified - we won't request signature automatically
+                console.log('Found connected wallet, but not verified. Waiting for user to click connect.');
+              }
+            }
+          } catch (error) {
+            console.log('No connection detected, waiting for user to connect');
+          }
+        } catch (error) {
+          console.error('Error checking wallet connection:', error);
+        }
+      }
+    };
+
+    // 비동기 초기화 함수
+    const initialize = async () => {
+      await checkConnection();
+      
+      // 이벤트 리스너 등록
+      if (window.ethereum) {
+        // 기존 리스너 제거
+        window.ethereum.removeAllListeners?.('accountsChanged');
+        
+        // 새 리스너 등록
+        window.ethereum.on('accountsChanged', handleAccountsChanged);
+      }
+      
+      document.addEventListener('mousedown', handleClickOutside);
+    };
+    
+    // 초기화 실행
+    initialize();
+
+    // 클린업 함수
+    return () => {
+      mounted = false;
+      
+      // 이벤트 리스너 제거
+      if (window.ethereum) {
+        window.ethereum.removeAllListeners?.('accountsChanged');
       }
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
-  // 서명 요청 함수
+  // Request signature function
   const requestSignature = async (address: string, ethProvider: ethers.BrowserProvider) => {
-    // 이미 서명 요청 중이면 중복 요청 방지
+    // Prevent duplicate signature requests
     if (isSigningMessage) {
-      throw new Error('이미 서명 진행 중입니다.');
+      console.log('이미 서명 중입니다. 중복 요청을 무시합니다.');
+      throw new Error('Signature process already in progress.');
     }
     
     try {
       setIsSigningMessage(true);
+      console.log('서명 요청 시작:', address);
       
-      const message = generateSignMessage(address);
+      // 1. 서버에서 논스 가져오기 (사용자가 없으면 자동 생성)
+      const nonce = await getNonce(address);
+      
+      // 2. 서명 메시지 생성 (논스 포함)
+      const message = generateSignMessage(address, nonce);
+      
+      // 3. 사용자에게 서명 요청
       const signer = await ethProvider.getSigner();
       const signature = await signer.signMessage(message);
       
-      // 서명 검증
-      const recoveredAddress = ethers.verifyMessage(message, signature);
+      // 4. 서명 검증
+      const isValid = verifySignature(message, signature, address);
       
-      // 서명한 주소와 지갑 주소가 일치하는지 확인
-      if (recoveredAddress.toLowerCase() === address.toLowerCase()) {
-        setIsVerified(true);
-        setAccount(address);
-        setIsConnected(true);
-        setDisplayAddress(`${address.substring(0, 6)}...${address.substring(address.length - 4)}`);
-        setProvider(ethProvider);
-        
-        localStorage.setItem(`signature_verified_${address}`, 'true');
-        localStorage.setItem(`signature_${address}`, signature);
-        console.log('서명 확인 완료');
-        return true;
-      } else {
-        console.error('서명 주소가 일치하지 않습니다.');
-        throw new Error('서명 주소가 일치하지 않습니다.');
+      if (!isValid) {
+        console.error('Signature verification failed');
+        throw new Error('Signature verification failed');
       }
+      
+      // 5. JWT 토큰 생성 (RLS 정책에서 사용)
+      const authToken = createAuthToken(address);
+      
+      // 6. 로컬 스토리지에 인증 정보 저장 (먼저 저장하여 다른 컴포넌트에서도 사용 가능하도록)
+      localStorage.setItem('current_wallet_address', address);
+      localStorage.setItem(`signature_verified_${address}`, 'true');
+      localStorage.setItem(`signature_${address}`, signature);
+      localStorage.setItem(`auth_token_${address}`, authToken);
+      
+      // 7. Supabase에 인증 요청
+      const result = await authenticateWithWallet(address, authToken, message, signature);
+      
+      // 인증 결과 처리
+      if ('error' in result && result.error) {
+        console.error('Error authenticating with wallet:', result.error);
+        throw new Error('Authentication failed. Please try again.');
+      }
+      
+      // 9. 상태 업데이트
+      setIsVerified(true);
+      setAccount(address);
+      setIsConnected(true);
+      setDisplayAddress(`${address.substring(0, 6)}...${address.substring(address.length - 4)}`);
+      setProvider(ethProvider);
+      
+      console.log('Signature verification and authentication completed');
+      
+      return true;
     } catch (error) {
-      console.error('메시지 서명 중 오류:', error);
-      // 서명 거부 또는 오류 발생 시 연결 초기화
+      console.error('Error during message signing:', error);
+      // Reset connection on signature rejection or error
       handleDisconnect();
-      throw error; // 호출자가 오류를 처리할 수 있도록 다시 throw
+      throw error; // Re-throw for caller to handle
     } finally {
       setIsSigningMessage(false);
     }
   };
 
-  // 지갑 연결 함수
+  // Wallet connect function
   const handleConnect = async () => {
-    if (isSigningMessage) return; // 이미 서명 중이면 중복 호출 방지
+    if (isSigningMessage) return; // Prevent duplicate calls if already signing
     
     if (window.ethereum) {
       try {
@@ -180,23 +259,23 @@ const WalletConnect: React.FC = () => {
         if (accounts.length > 0) {
           const address = accounts[0];
           
-          // 서명 상태 확인
+          // Check signature status
           const verifiedStatus = localStorage.getItem(`signature_verified_${address}`);
           if (verifiedStatus === 'true') {
-            // 이미 서명된 지갑이라면 바로 연결
+            // If already signed, connect immediately
             setAccount(address);
             setIsConnected(true);
             setIsVerified(true);
             setDisplayAddress(`${address.substring(0, 6)}...${address.substring(address.length - 4)}`);
             setProvider(ethProvider);
           } else {
-            // 새 연결이라면 바로 서명 요청
+            // For new connections, request signature immediately
             await requestSignature(address, ethProvider);
           }
         }
       } catch (error) {
-        console.error('지갑 연결 중 오류:', error);
-        // 오류 발생 시 연결 취소 - 이미 requestSignature에서 handleDisconnect 호출됨
+        console.error('Error connecting wallet:', error);
+        // Error handling - handleDisconnect already called in requestSignature
       } finally {
         setIsSigningMessage(false);
       }
@@ -205,11 +284,11 @@ const WalletConnect: React.FC = () => {
     }
   };
 
-  // 지갑 연결 해제 함수
+  // Wallet disconnect function
   const handleDisconnect = () => {
     if (account) {
-      localStorage.removeItem(`signature_verified_${account}`);
-      localStorage.removeItem(`signature_${account}`);
+      // 인증 정보 초기화 함수 사용
+      clearAuthenticationData(account);
     }
     
     setAccount(null);
@@ -219,19 +298,16 @@ const WalletConnect: React.FC = () => {
     setShowDropdown(false);
     setIsVerified(false);
     
-    // 로컬 세션 정리
-    localStorage.removeItem('walletConnected');
-    
-    // MetaMask에는 공식적인 연결 해제 API가 없지만, 연결 상태를 초기화합니다
-    // 사용자에게 지갑 앱에서 로그아웃 하는 것을 안내할 수 있습니다
+    // MetaMask doesn't have an official disconnect API, but we reset the connection state
+    // User may need to be guided to log out from their wallet app
     if (window.ethereum && window.ethereum._metamask) {
       try {
-        // 일부 지갑에서는 이 방법을 지원할 수 있습니다
+        // Some wallets might support this method
         window.ethereum._metamask.isUnlocked().then(() => {
-          console.log('사용자는 MetaMask에서 수동으로 로그아웃해야 할 수 있습니다');
+          console.log('User may need to manually logout from MetaMask');
         });
       } catch (e) {
-        console.log('MetaMask 연결 해제 시도 중 오류:', e);
+        console.log('Error attempting to disconnect MetaMask:', e);
       }
     }
   };
@@ -241,7 +317,7 @@ const WalletConnect: React.FC = () => {
     setShowDropdown(false);
   };
 
-  // 드롭다운 토글
+  // Toggle dropdown
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
   };

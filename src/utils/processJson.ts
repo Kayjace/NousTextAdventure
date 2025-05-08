@@ -23,6 +23,8 @@ const processJson = <T>(response: string): T => {
     // 먼저 JSON 부분만 추출 후 파싱 시도
     jsonPart = extractJsonFromResponse(response);
     
+    console.log("Extracted JSON before processing:", jsonPart);
+    
     // 추가 정리: 따옴표 문제 해결
     jsonPart = jsonPart.replace(/(\s*{?\s*)(?<!")(\w+)(?!")(\s*:)/g, '$1"$2"$4');
     // 줄바꿈 제거
@@ -30,7 +32,19 @@ const processJson = <T>(response: string): T => {
     // 후행 쉼표 제거
     jsonPart = jsonPart.replace(/,\s*(}|])/g, '$1');
     
+    console.log("Processed JSON before parsing:", jsonPart);
+    
     responseObject = JSON.parse(jsonPart);
+    
+    // Check for traitAlignment fields
+    if (responseObject && responseObject.options) {
+      console.log("Options after parsing:", JSON.stringify(responseObject.options, null, 2));
+      // Check if any option has traitAlignment
+      const hasTraitAlignment = Object.values(responseObject.options).some(
+        (option: any) => option.traitAlignment
+      );
+      console.log("Has traitAlignment:", hasTraitAlignment);
+    }
   } catch (error) {
     const castedError = error as Error;
     console.error('Error parsing JSON response:', castedError);

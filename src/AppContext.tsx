@@ -43,7 +43,7 @@ interface AppState {
   playerStats: PlayerStats;
   scenarioHistory: ScenarioType[];
   moralChoices: MoralAlignment[];
-  successfulChoices: boolean[];
+  successfulChoices: string[];
   overallScore: number;
   scoreBreakdown: {
     decisions: number;

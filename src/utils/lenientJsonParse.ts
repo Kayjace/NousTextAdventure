@@ -31,9 +31,21 @@ const lenientJsonParse = (json: string, error: string): any => {
   });
 
   try {
-    return JSON.parse(fixedJson);
-  } catch (e) {
-    const castedError = e as Error;
+    // 파싱 시도
+    const parsed = JSON.parse(fixedJson);
+    
+    // traitAlignment 필드 확인
+    if (parsed && parsed.options) {
+      console.log("Options after lenient parsing:", JSON.stringify(parsed.options, null, 2));
+      const hasTraitAlignment = Object.values(parsed.options).some(
+        (option: any) => option.traitAlignment
+      );
+      console.log("Has traitAlignment after lenient parsing:", hasTraitAlignment);
+    }
+    
+    return parsed;
+  } catch (evalError) {
+    const castedError = evalError as Error;
     console.error('Error parsing JSON with lenientJsonParse:', castedError);
     console.error('Attempted to parse:', fixedJson);
     return { error: castedError.message };

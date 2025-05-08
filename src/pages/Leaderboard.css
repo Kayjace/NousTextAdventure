@@ -1,0 +1,118 @@
+.leaderboard-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 1px solid #0f0;
+  border-radius: 8px;
+  color: #0f0;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.leaderboard-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.leaderboard-header h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 10px #0f0;
+}
+
+.leaderboard-header p {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+.leaderboard-content {
+  overflow-x: auto;
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(0, 255, 0, 0.3);
+}
+
+.leaderboard-table th {
+  background-color: rgba(0, 50, 0, 0.6);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.leaderboard-table tr:hover {
+  background-color: rgba(0, 50, 0, 0.3);
+}
+
+.leaderboard-table .top-1 {
+  background-color: rgba(255, 215, 0, 0.1);
+  font-weight: bold;
+}
+
+.leaderboard-table .top-2 {
+  background-color: rgba(192, 192, 192, 0.1);
+  font-weight: bold;
+}
+
+.leaderboard-table .top-3 {
+  background-color: rgba(205, 127, 50, 0.1);
+  font-weight: bold;
+}
+
+.rank-cell {
+  font-weight: bold;
+  text-align: center;
+  width: 60px;
+}
+
+.score-cell {
+  font-weight: bold;
+  text-align: center;
+  color: #0f0;
+  text-shadow: 0 0 5px #0f0;
+}
+
+.leaderboard-loading,
+.leaderboard-error {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+}
+
+.leaderboard-error {
+  color: #f00;
+}
+
+.no-entries {
+  text-align: center;
+  padding: 2rem;
+  font-style: italic;
+  opacity: 0.7;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .leaderboard-container {
+    padding: 1rem;
+  }
+  
+  .leaderboard-table th,
+  .leaderboard-table td {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .leaderboard-header h2 {
+    font-size: 1.5rem;
+  }
+} 

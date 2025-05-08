@@ -4,7 +4,7 @@ import { initReactI18next } from 'react-i18next';
 const resources = {
     en: {
       translation: {
-        // 기존 번역들...
+        // 
         'Enter your Nous Research API key:': 'Enter your Nous Research API key:',
         'Nous API key': 'Nous API key',
         'Submit': 'Submit',
@@ -51,10 +51,34 @@ const resources = {
         
         // GameLoadOrCreate
         'Start New Game': 'Start New Game',
+        'New Adventure': 'New Adventure',
+        'Continue Adventure': 'Continue Adventure',
+        'Start a fresh journey with new characters, worlds, and stories.': 'Start a fresh journey with new characters, worlds, and stories.',
+        'Resume your previous adventures and continue your journey.': 'Resume your previous adventures and continue your journey.',
+        'View Saved Games': 'View Saved Games',
+        'Your Saved Adventures': 'Your Saved Adventures',
+        'Showing stories for wallet:': 'Showing stories for wallet:',
+        'No saved stories available for this wallet': 'No saved stories available for this wallet',
         
         // GameOutput
         'Genre:': 'Genre:',
         'Turns:': 'Turns:',
+        '성공': 'SUCCESS',
+        '부분 성공': 'PARTIAL',
+        '실패': 'FAILURE',
+        '게임 저장': 'Save Game',
+        '게임이 저장되었습니다!': 'Game saved successfully!',
+        '저장 중 오류가 발생했습니다.': 'Error occurred while saving.',
+        '이전에 저장된 게임이 있습니다. 계속하시겠습니까?': 'You have a previously saved game. Would you like to continue?',
+        
+        // Options Metadata
+        'RISK: high': 'RISK: High',
+        'RISK: medium': 'RISK: Medium',
+        'RISK: low': 'RISK: Low',
+        'MORAL: moral': 'MORAL: Good',
+        'MORAL: immoral': 'MORAL: Evil',
+        'MORAL: neutral': 'MORAL: Neutral',
+        'TRAIT:': 'TRAIT:',
         
         // GenreSelection
         'Select a genre:': 'Select a genre:',
@@ -67,17 +91,22 @@ const resources = {
         'Story loaded!': 'Story loaded!',
         'Delete': 'Delete',
         'Load': 'Load',
-        'Enter your choice' : 'Enter your choice'
-
+        'Enter your choice' : 'Enter your choice',
+        'Loading...': 'Loading...',
+        'Refresh': 'Refresh',
+        'Loading stories...': 'Loading stories...',
+        'Failed to load stories': 'Failed to load stories',
+        'Saved': 'Saved'
       }
     },
     kr: {
       translation: {
-        // 기존 번역들...
+        //
         'Enter your Nous Research API key:': 'Nous Research API 키를 입력하세요:',
         'Nous API key': 'Nous API 키',
         'Submit': '입력',
-        'This is all run in the browser so the API key is private; it is used to generate your own story.': '브라우저 기반 앱이므로 API 키는 외부에 공개되지 않습니다. API키는 당신만의 이야기를 생성하는 데 사용됩니다.',
+        'This is all run in the browser so the API key is private;' : '브라우저 기반 앱이므로 API 키는 로컬PC 외부에 공개되지 않습니다.',
+        'it is used to generate your own story.': 'API키는 당신만의 이야기를 생성하는 데 사용됩니다.',
         'Get your API key from': 'API 키는 다음에서 얻을 수 있습니다',
         'Nous Research Portal': 'Nous Research 포털',
 
@@ -112,7 +141,7 @@ const resources = {
         'Moral Compass': '도덕적 경향',
         'Adventure Stats': '모험 통계',
         'Moral Score:': '도덕성 점수:',
-        'Risk Score:': '위험감수 점수:',
+        'Risk Score:': '리스크 점수:',
         'Trait Consistency:': '특성의 일관성:',
         'Creativity:': '창의성:',
         'Success Rate:': '성공률:',
@@ -120,10 +149,34 @@ const resources = {
         
         // GameLoadOrCreate
         'Start New Game': '새 게임 시작',
+        'New Adventure': '새로운 모험',
+        'Continue Adventure': '모험 계속하기',
+        'Start a fresh journey with new characters, worlds, and stories.': '새로운 캐릭터, 세계, 스토리로 새 여정을 시작하세요.',
+        'Resume your previous adventures and continue your journey.': '이전 모험을 다시 시작하고 여정을 계속하세요.',
+        'View Saved Games': '저장된 게임 보기',
+        'Your Saved Adventures': '저장된 모험',
+        'Showing stories for wallet:': '지갑에 저장된 스토리:',
+        'No saved stories available for this wallet': '이 지갑에 저장된 스토리가 없습니다',
         
         // GameOutput
         'Genre:': '장르:',
         'Turns:': '턴:',
+        '성공': '성공',
+        '부분 성공': '부분 성공',
+        '실패': '실패',
+        '게임 저장': '게임 저장',
+        '게임이 저장되었습니다!': '게임이 저장되었습니다!',
+        '저장 중 오류가 발생했습니다.': '저장 중 오류가 발생했습니다.',
+        '이전에 저장된 게임이 있습니다. 계속하시겠습니까?': '이전에 저장된 게임이 있습니다. 계속하시겠습니까?',
+        
+        // Options Metadata
+        'RISK: high': '위험도: 높음',
+        'RISK: medium': '위험도: 중간',
+        'RISK: low': '위험도: 낮음',
+        'MORAL: moral': '도덕성: 선한',
+        'MORAL: immoral': '도덕성: 악한',
+        'MORAL: neutral': '도덕성: 중립',
+        'TRAIT:': '특성:',
         
         // GenreSelection
         'Select a genre:': '장르 선택:',
@@ -136,7 +189,12 @@ const resources = {
         'Story loaded!': '이야기가 로드되었습니다!',
         'Delete': '삭제',
         'Load': '불러오기',
-        'Enter your choice' : '선택하세요'
+        'Enter your choice' : '선택하세요',
+        'Loading...': '로딩 중...',
+        'Refresh': '새로고침',
+        'Loading stories...': '스토리를 불러오는 중...',
+        'Failed to load stories': '스토리를 불러오는 데 실패했습니다',
+        'Saved': '저장'
       }
     }
   };

@@ -7,6 +7,14 @@ import './mobile.css';
 import { AppProvider } from './AppContext';
 import './i18n'; // i18n 설정 가져오기 추가
 
+// Node.js 폴리필 설정
+import { Buffer } from 'buffer';
+import processModule from 'process/browser';
+
+window.Buffer = Buffer;
+// @ts-ignore - process 타입 충돌 회피
+window.process = processModule;
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );

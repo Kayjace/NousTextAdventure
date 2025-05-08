@@ -2,41 +2,50 @@
 
 .ending-screen {
 display: flex;
-overflow: hidden;
+overflow: auto;
 flex-direction: column;
 align-items: center;
-justify-content: center;
+justify-content: flex-start; /* 상단에서 시작 */
 background-color: black;
 color: lime;
-min-height: 100vh;
+min-height: calc(100vh - 100px); /* 헤더 높이를 고려 */
 padding: 20px;
 font-family: 'VT323', monospace;
+position: static; /* position 변경 */
+z-index: 1;
+margin-top: 20px; /* 헤더와 간격 */
+pointer-events: auto; /* 이벤트 전파 허용 */
 }
 
 /* Different ending background styles */
 .ending-heroic {
 background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../assets/1.png');
 background-size: cover;
+background-attachment: local;
 }
 
 .ending-pyrrhic {
 background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('../assets/2.png');
 background-size: cover;
+background-attachment: local;
 }
 
 .ending-antihero {
 background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('../assets/3.png');
 background-size: cover;
+background-attachment: local;
 }
 
 .ending-tragic {
 background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)), url('../assets/4.png');
 background-size: cover;
+background-attachment: local;
 }
 
 .ending-bittersweet {
 background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('../assets/5.png');
 background-size: cover;
+background-attachment: local;
 }
 
 .ending-container {
@@ -235,6 +244,26 @@ background-color: rgba(0, 80, 0, 0.9);
 box-shadow: 0 0 20px #00ff00;
 }
 
+.save-result-btn {
+background-color: rgba(0, 30, 50, 0.7);
+color: #00ffff;
+border: 2px solid #00ffff;
+padding: 10px 20px;
+font-size: 1.2rem;
+cursor: pointer;
+transition: all 0.3s;
+font-family: 'VT323', monospace;
+text-transform: uppercase;
+letter-spacing: 2px;
+box-shadow: 0 0 10px #00ffff;
+margin-left: 15px;
+}
+
+.save-result-btn:hover {
+background-color: rgba(0, 50, 80, 0.9);
+box-shadow: 0 0 20px #00ffff;
+}
+
 @keyframes flicker {
 0%, 18%, 22%, 25%, 53%, 57%, 100% {
 box-shadow: 0 0 10px #00ff00, inset 0 0 5px #00ff00;
@@ -262,4 +291,36 @@ margin-bottom: 15px;
 text-shadow: 0 0 8px #ffffff;
 border-bottom: 1px solid #00ff00;
 padding-bottom: 5px;
+}
+
+.result-saved-status {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.result-saved-status.success {
+  background-color: rgba(0, 255, 0, 0.1);
+  color: #0f0;
+  border: 1px solid #0f0;
+}
+
+.result-saved-status.warning {
+  background-color: rgba(255, 215, 0, 0.1);
+  color: #ffd700;
+  border: 1px solid #ffd700;
+}
+
+.result-saved-status.error {
+  background-color: rgba(255, 0, 0, 0.1);
+  color: #f66;
+  border: 1px solid #f66;
+}
+
+.result-saved-status span {
+  font-size: 1.2rem;
 }

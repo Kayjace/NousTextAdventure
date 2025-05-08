@@ -44,8 +44,8 @@ const useStoryProgress = () => {
     
     // 위험 점수 업데이트
     const riskValue = option.risk === 'high' ? 8 : 
-                     option.risk === 'medium' ? 5 : 2;
-    newStats.riskScore = Math.min(100, newStats.riskScore + riskValue);
+                     option.risk === 'medium' ? 5 : -5;
+    newStats.riskScore = Math.min(100, Math.max(0, newStats.riskScore + riskValue));
     
     // 도덕성 점수 업데이트
     const moralValue = option.alignment === 'moral' ? 10 : 
@@ -59,22 +59,29 @@ const useStoryProgress = () => {
       newStats.traitConsistency = Math.max(0, newStats.traitConsistency - 3);
     }
     
-    // 성공률 업데이트
-    const successValue = outcome === 'success' ? 10 : 
-                         outcome === 'partial' ? 5 : -5;
-    newStats.successRate = Math.max(0, Math.min(100, newStats.successRate + successValue));
+    // 성공률 업데이트 - 새로운 방식 적용
+    // 부분 성공은 카운트하지 않고, 성공/(성공+실패) 비율로 계산
+    const successCount = successfulChoices.filter(result => result === 'success').length + (outcome === 'success' ? 1 : 0);
+    const failureCount = successfulChoices.filter(result => result === 'failure').length + (outcome === 'failure' ? 1 : 0);
     
-    // 창의성 점수는 위험 선택과 결과 조합으로 업데이트
+    // 성공 또는 실패가 있을 경우에만 계산
+    if (successCount + failureCount > 0) {
+      newStats.successRate = Math.round((successCount / (successCount + failureCount)) * 100);
+    } else {
+      newStats.successRate = 0;
+    }
+    
+    // 창의성 점수는 위험 선택과 결과 조합으로 업데이트 - 위험한 선택이 성공했을 때만 +8
     if (option.risk === 'high' && outcome === 'success') {
       newStats.creativity = Math.min(100, newStats.creativity + 8);
-    } else if (option.risk === 'medium' && outcome !== 'failure') {
-      newStats.creativity = Math.min(100, newStats.creativity + 4);
     }
     
     return newStats;
   };
 
   const handleUserInput = async (option: Option) => {
+    console.log("User selected option with traitAlignment:", option.traitAlignment);
+    
     try {
       let storySegment: string;
       let options: any;
@@ -126,7 +133,7 @@ const useStoryProgress = () => {
           playerStats,
           scenarioHistory,
           moralChoices,
-          successfulChoices,
+          successfulChoices.map(outcome => outcome === 'success'),
           apiKey,
           provider
         );
@@ -147,7 +154,7 @@ const useStoryProgress = () => {
       
       // 선택 히스토리 업데이트
       const newMoralChoices = [...moralChoices, option.alignment];
-      const newSuccessfulChoices = [...successfulChoices, outcome === 'success'];
+      const newSuccessfulChoices = [...successfulChoices, outcome];
       const newScenarioHistory = [...scenarioHistory, scenarioType];
 
       const normalizedOptions: { [key: string]: Option } = {};
@@ -165,36 +172,48 @@ const useStoryProgress = () => {
         });
       }
 
-      setState((prevState) => ({
-        ...prevState,
-        storySummary: [
-          ...prevState.storySummary,
-          " :USERS CHOICE: " + option.text + " : " + newStorySummary,
-        ],
-        storyAndUserInputs: [
-          ...prevState.storyAndUserInputs,
-          option.text,
-          storySegment,
-        ],
-        turnCount: prevState.turnCount + 1,
-        previousParagraph: storySegment,
-        options: normalizedOptions, // 정규화된 옵션 사용
-        playerStats: updatedStats,
-        moralChoices: newMoralChoices,
-        successfulChoices: newSuccessfulChoices,
-        scenarioHistory: newScenarioHistory,
-        isLoading: false,
-        ...(isFinal
-          ? {
-              isFinal: true,
-              gameState: "endingScreen",
-              ...wrapUpDetails,
-            }
-          : {}),
-      }));
-      
-      // 스토리 저장
-      saveOrUpdateStory(state);
+      setState((prevState) => {
+        const newState = {
+          ...prevState,
+          storySummary: [
+            ...prevState.storySummary,
+            " :USERS CHOICE: " + option.text + " : " + newStorySummary,
+          ],
+          storyAndUserInputs: [
+            ...prevState.storyAndUserInputs,
+            option.text,
+            storySegment,
+          ],
+          turnCount: prevState.turnCount + 1,
+          previousParagraph: storySegment,
+          options: normalizedOptions, // 정규화된 옵션 사용
+          playerStats: updatedStats,
+          moralChoices: newMoralChoices,
+          successfulChoices: newSuccessfulChoices,
+          scenarioHistory: newScenarioHistory,
+          isLoading: false,
+          ...(isFinal
+            ? {
+                isFinal: true,
+                gameState: "endingScreen",
+                ...wrapUpDetails,
+              }
+            : {}),
+        };
+        
+        // 다음 프레임에서 최신 상태로 저장하기 위해 setTimeout 사용
+        setTimeout(() => {
+          try {
+            const updatedState = {...state, ...newState};
+            console.log("Saving story after user input, turn:", updatedState.turnCount);
+            saveOrUpdateStory(updatedState);
+          } catch (error) {
+            console.error("Error saving story after user input:", error);
+          }
+        }, 100);
+        
+        return newState;
+      });
     } catch (error) {
       console.error("Failed to process story progression:", error);
       setState((prevState) => ({

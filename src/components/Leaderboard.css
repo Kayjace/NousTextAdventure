@@ -1,0 +1,79 @@
+.leaderboard-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.leaderboard-title {
+  text-align: center;
+  color: #f8f8f8;
+  margin-bottom: 20px;
+  font-size: 24px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #f8f8f8;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #444;
+}
+
+.leaderboard-table th {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #f8f8f8;
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.leaderboard-table tr:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.leaderboard-table .top-1 {
+  background-color: rgba(255, 215, 0, 0.2); /* Gold */
+}
+
+.leaderboard-table .top-2 {
+  background-color: rgba(192, 192, 192, 0.2); /* Silver */
+}
+
+.leaderboard-table .top-3 {
+  background-color: rgba(205, 127, 50, 0.2); /* Bronze */
+}
+
+.leaderboard-loading,
+.leaderboard-error,
+.leaderboard-empty {
+  text-align: center;
+  padding: 20px;
+  color: #f8f8f8;
+  font-style: italic;
+}
+
+.leaderboard-error {
+  color: #ff6b6b;
+}
+
+@media (max-width: 600px) {
+  .leaderboard-container {
+    padding: 10px;
+  }
+  
+  .leaderboard-table th,
+  .leaderboard-table td {
+    padding: 8px;
+    font-size: 14px;
+  }
+} 

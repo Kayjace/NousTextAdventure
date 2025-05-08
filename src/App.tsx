@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import "./App.css";
 import ImageCarousel from "./components/CharacterImageSelection";
 import APIKeyInput from "./components/APIKeyInput";
@@ -16,6 +16,7 @@ import GameLoadOrCreate from "./components/GameLoadOrCreate";
 import { saveOrUpdateStory } from "./helpers/indexedDB";
 import Layout from "./components/Layout";
 import Profile from "./pages/Profile";
+import Leaderboard from "./pages/Leaderboard";
 
 // API 키 입력 페이지 컴포넌트
 const ApiKeyPage: React.FC = () => {
@@ -24,6 +25,30 @@ const ApiKeyPage: React.FC = () => {
       <APIKeyInput />
     </Layout>
   );
+};
+
+// 디버깅 래퍼 컴포넌트 - 라우팅과 상태를 추적
+const GameWrapper: React.FC = () => {
+  const { state, setState } = useContext(AppContext);
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    console.log("게임 래퍼 마운트됨, 현재 게임 상태:", state.gameState);
+    console.log("API 키:", state.apiKey ? "설정됨" : "설정되지 않음");
+    
+    // API 키가 없으면 홈으로 리디렉션
+    if (!state.apiKey) {
+      console.log("API 키가 없어 홈으로 리디렉션");
+      navigate('/');
+    } else {
+      // API 키가 있으면 로드 또는 생성 화면으로 이동
+      if (state.gameState !== 'playing' && state.gameState !== 'endingScreen') {
+        setState(prevState => ({ ...prevState, gameState: "loadOrCreate" }));
+      }
+    }
+  }, [state.apiKey, state.gameState, navigate, setState]);
+
+  return <Game />;
 };
 
 // 게임 컴포넌트 - 기존 App 컴포넌트의 내용을 이동
@@ -48,15 +73,30 @@ const Game: React.FC = () => {
     themeExploration,
   } = state;
 
+  // 상태 변경 디버깅
+  useEffect(() => {
+    console.log("게임 컴포넌트 내부 상태 변경:", gameState);
+  }, [gameState]);
+
   if (isFinal) {
     setState((prevState) => ({ ...prevState, gameState: "endingScreen" }));
   }
 
   useEffect(() => {
-    if (gameState === "playing" || gameState === "endingScreen") {
+    if (gameState === "playing") {
+      console.log("Saving game state due to options or story update");
       saveOrUpdateStory(state);
     }
-  }, [options]);
+  }, [options, storyAndUserInputs, gameState, state]);
+
+  // 추가 저장 트리거 - 턴 카운트 변경 시에도 저장
+  useEffect(() => {
+    if (turnCount > 0 && gameState === "playing") {
+      console.log(`Saving game state due to turn count update: ${turnCount}`);
+      saveOrUpdateStory(state);
+    }
+  }, [turnCount, gameState, state]);
+
   const [loadingProgress, setLoadingProgress] = useState<number>(0);
 
   useFetchGameData(setLoadingProgress);
@@ -90,6 +130,7 @@ const Game: React.FC = () => {
               options={options}
               isFinal={isFinal}
               handleOptionsClick={handleUserInput}
+              outcomes={state.successfulChoices}
             />
           </div>
           <CharacterInfo
@@ -121,8 +162,9 @@ const App: React.FC = () => {
     <Router>
       <Routes>
         <Route path="/" element={<ApiKeyPage />} />
-        <Route path="/game" element={<Game />} />
+        <Route path="/game" element={<GameWrapper />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>

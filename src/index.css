@@ -1,8 +1,26 @@
+:root {
+  /* 기본 색상 변수 */
+  --text-color: #0f0;
+  --bg-color: #000;
+  --accent-color: #0f0;
+  --dark-accent: #006400;
+  
+  /* 선택지 정렬 색상 */
+  --moral-color: #4aff4a;
+  --immoral-color: #ff4a4a;
+  --neutral-color: #4affff;
+  
+  /* 위험 수준 색상 */
+  --high-risk: #ff6b6b;
+  --medium-risk: #ffd166;
+  --low-risk: #06d6a0;
+}
+
 body {
   margin: 0;
   font-family: 'Courier New', Courier, monospace;
-  background-color: black;
-  color: lime;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
 * {
@@ -14,13 +32,13 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: lime;
+  background-color: var(--accent-color);
   border-radius: 5px;
 }
 
 /* For Firefox */
 @-moz-document url-prefix() {
   * {
-    scrollbar-color: lime black;
+    scrollbar-color: var(--accent-color) var(--bg-color);
   }
 }

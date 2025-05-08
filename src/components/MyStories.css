@@ -1,54 +1,159 @@
 /* MyStories.css */
 
-.stories-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjust the minmax value according to your needs */
-    gap: 1rem; /* Adjust the gap between the cards */
-    max-height: 60vh;
-    overflow-y: auto;
-    border-radius: 10px;
-    border: 2px solid lime;
-    padding: 1rem;
-  }
-  
-  .story-card-story {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    border-radius: 10px;
-    border: 2px solid lime;
-    padding: 1rem;
-  }
+.wallet-info-message {
+  background-color: #001100;
+  color: #0f0;
+  padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  text-align: center;
+  border: 1px solid #0a0;
+}
 
-  .card-content-story {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .character-info-story {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-  }
-  
-  .character-name-story {
-  }
-  
-  .character-image-story {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: 2px solid lime;
-  }
-  
-  .story-paragraph {
-    margin-top: 1rem;
-  }
-  
-  .card-buttons {
-    display: flex;
-    flex-direction: column;
-  }
-  
+.stories-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  max-height: 60vh;
+  overflow-y: auto;
+  border-radius: 10px;
+  border: 2px solid lime;
+  padding: 1rem;
+}
+
+.story-card {
+  background-color: #000;
+  border-radius: 8px;
+  border: 1px solid #0f0;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.story-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 255, 0, 0.2);
+}
+
+.card-content-story {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.character-name-story {
+  color: #0f0;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.character-image-story {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid lime;
+  margin-bottom: 1rem;
+  object-fit: cover;
+}
+
+.story-paragraph {
+  margin-top: 1rem;
+  color: #ccc;
+  font-size: 0.9rem;
+  text-align: left;
+  width: 100%;
+}
+
+.card-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.card-buttons button {
+  flex: 1;
+  background-color: #000;
+  color: #0f0;
+  border: 1px solid #0f0;
+  border-radius: 4px;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.card-buttons button:hover {
+  background-color: #030;
+}
+
+.card-buttons button:last-child {
+  color: #0ff;
+  border-color: #0aa;
+}
+
+.card-buttons button:last-child:hover {
+  background-color: #022;
+}
+
+.no-stories-message {
+  text-align: center;
+  color: #aaa;
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px dashed #555;
+  background-color: rgba(0, 0, 0, 0.3);
+  margin-top: 1rem;
+}
+
+.refresh-button {
+  margin-left: 6px;
+  padding: 2px 8px;
+  background-color: #2a2;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  vertical-align: middle;
+  opacity: 0.8;
+  min-width: auto;
+  width: auto;
+}
+
+.refresh-button:hover {
+  background-color: #3b3;
+  opacity: 1;
+}
+
+.loading-message, .error-message {
+  text-align: center;
+  padding: 20px;
+  margin: 10px 0;
+  border-radius: 5px;
+}
+
+.loading-message {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.error-message {
+  background-color: rgba(255, 0, 0, 0.1);
+  color: #d00;
+}
+
+.story-meta {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8rem;
+  color: #888;
+  margin-bottom: 5px;
+}
+
+.story-meta span {
+  margin-bottom: 3px;
+}
   
