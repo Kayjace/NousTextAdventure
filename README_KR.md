@@ -1,7 +1,7 @@
 # Nous Text Adventures
 
 <p align="center">
-  <img src="./logo.png" alt="Logo" width="200">
+  <img src="./public/logo.webp" alt="Logo" width="200">
 </p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
