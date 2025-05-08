@@ -1,0 +1,57 @@
+/* APIKeyInput.css */
+.top-language-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.api-wrapper {
+  margin: 0 auto;
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.api-container {
+  border: 1px solid lime;
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.api-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.api-input input,
+.api-input select { /* Apply the same styles to select as input */
+  background-color: black;
+  color: lime;
+  border: 1px solid lime;
+  padding: 0.5em 1em;
+  font-family: 'Courier New', Courier, monospace;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.api-container button {
+  background-color: black;
+  color: lime;
+  border: 1px solid lime;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  font-family: 'Courier New', Courier, monospace;
+  transition: background-color 0.3s, color 0.3s;
+  width: 100%;
+}
+
+.api-container button:hover {
+  background-color: lime;
+  color: black;
+}

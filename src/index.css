@@ -1,0 +1,26 @@
+body {
+  margin: 0;
+  font-family: 'Courier New', Courier, monospace;
+  background-color: black;
+  color: lime;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  width: 0.4em;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: lime;
+  border-radius: 5px;
+}
+
+/* For Firefox */
+@-moz-document url-prefix() {
+  * {
+    scrollbar-color: lime black;
+  }
+}
