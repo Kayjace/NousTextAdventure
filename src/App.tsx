@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import ImageCarousel from "./components/CharacterImageSelection";
 import APIKeyInput from "./components/APIKeyInput";
@@ -13,8 +14,20 @@ import useStoryProgress from "./hooks/useStoryProgress";
 import EndingScreen from "./components/EndingScreen";
 import GameLoadOrCreate from "./components/GameLoadOrCreate";
 import { saveOrUpdateStory } from "./helpers/indexedDB";
+import Layout from "./components/Layout";
+import Profile from "./pages/Profile";
 
-const App: React.FC = () => {
+// API 키 입력 페이지 컴포넌트
+const ApiKeyPage: React.FC = () => {
+  return (
+    <Layout>
+      <APIKeyInput />
+    </Layout>
+  );
+};
+
+// 게임 컴포넌트 - 기존 App 컴포넌트의 내용을 이동
+const Game: React.FC = () => {
   const { state, setState } = useContext(AppContext);
   const {
     chosenGenre,
@@ -51,7 +64,7 @@ const App: React.FC = () => {
   const handleUserInput = useStoryProgress();
 
   return (
-    <div className="App">
+    <Layout>
       {gameState === "apiKeyInput" && (
         <div>
           <APIKeyInput />
@@ -98,7 +111,21 @@ const App: React.FC = () => {
           themeExploration={themeExploration}
         />
       )}
-    </div>
+    </Layout>
+  );
+};
+
+// 메인 App 컴포넌트 - 라우팅 설정
+const App: React.FC = () => {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<ApiKeyPage />} />
+        <Route path="/game" element={<Game />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Router>
   );
 };
 

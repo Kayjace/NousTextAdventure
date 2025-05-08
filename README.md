@@ -9,7 +9,14 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-v4.4.3-green)](https://www.typescriptlang.org)
 [![CSS](https://img.shields.io/badge/CSS3-black)](https://developer.mozilla.org/en-US/docs/Web/CSS)
 
-Nous Text Adventures (NTA) is an interactive, procedurally generated text adventure game powered by the Nous API, originated from MyTextAdventure. Choose your favorite genre and dive into an immersive world created just for you! Our advanced prompt engineering ensures that GPT responses are intelligently formatted and integrated into your unique adventure.
+<p align="center">
+  <a href="README.md">English</a> | 
+  <a href="README_KR.md">한국어</a>
+</p>
+
+Nous Text Adventures (NTA) is an interactive, procedurally generated text adventure game powered by the Nous API, originated from MyTextAdventure. Choose your favorite genre and dive into an immersive world created just for you! Advanced prompt engineering ensures that Nous LLM responses are intelligently formatted and integrated into your unique adventure.
+
+> **Note on Future Airdrops**: While this is purely hypothetical at this stage, if Nous decides to allocate airdrops for community projects in the future, we plan to distribute them fairly among game users based on their gameplay history, engagement quality, and contribution to the ecosystem. Illegal actors will be excluded from future airdrop if there is one.
 
 
 ## Table of Contents
@@ -39,27 +46,3 @@ Nous Text Adventures (NTA) is an interactive, procedurally generated text advent
   <img src="./screenshots/bio.png" alt="Screenshot 7" width="600">
   <img src="./screenshots/storymobile.png" alt="Screenshot 8" width="600">
 </p>
-
-## Installation
-
-1. Clone the repository
-
-2. Install dependencies
-
-```bash
-npm install
-```
-
-## Usage
-
-1. Start the development server
-
-```bash
-npm start
-```
-
-2. Navigate to `localhost:3000` in your browser
-
-## License
-
-This project is licensed under the terms of the MIT license.

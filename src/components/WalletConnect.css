@@ -1,0 +1,181 @@
+.wallet-connect {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.connect-button {
+  background-color: #000;
+  color: #0f0;
+  border: 1px solid #0f0;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  min-width: 150px;
+  text-align: center;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.connect-button:hover {
+  background-color: #030;
+}
+
+.connect-button:disabled {
+  opacity: 0.7;
+  cursor: wait;
+  background-color: #030;
+}
+
+.wallet-connected {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.wallet-address {
+  background-color: #001100;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-family: monospace;
+  color: #0f0;
+  border: 1px solid #0a0;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.wallet-address::after {
+  content: '▼';
+  font-size: 0.7rem;
+  margin-left: 0.5rem;
+}
+
+.wallet-address:hover {
+  background-color: #002200;
+}
+
+.verified-badge {
+  color: #0f0;
+  margin-left: 0.5rem;
+  font-weight: bold;
+  font-size: 0.8rem;
+  background-color: #003300;
+  padding: 0 0.3rem;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #0f0;
+  height: 16px;
+  width: 16px;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% - 1px);
+  right: 0;
+  background-color: #000;
+  border: 1px solid #0f0;
+  border-radius: 4px;
+  min-width: 120px;
+  z-index: 10;
+  display: none;
+  padding-top: 4px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.wallet-connected:hover .dropdown-menu {
+  display: block;
+  animation: fadeIn 0.1s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.dropdown-connector {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 10px;
+  top: 100%;
+  background-color: transparent;
+  z-index: 9;
+}
+
+.dropdown-item {
+  padding: 0.5rem 1rem;
+  color: #0f0;
+  display: block;
+  text-align: left;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9rem;
+}
+
+.dropdown-item:hover {
+  background-color: #001100;
+}
+
+.dropdown-item.verify {
+  color: #0ff;
+  border-bottom: 1px solid #333;
+}
+
+.dropdown-item.verify:hover {
+  background-color: #002222;
+}
+
+.dropdown-item.disconnect {
+  color: #f66;
+  border-top: 1px solid #333;
+}
+
+.dropdown-item.disconnect:hover {
+  background-color: #220000;
+}
+
+.wallet-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.profile-button, .disconnect-button {
+  background-color: #000;
+  color: #0f0;
+  border: 1px solid #0f0;
+  border-radius: 4px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.profile-button:hover, .disconnect-button:hover {
+  background-color: #030;
+}
+
+.disconnect-button {
+  border-color: #a00;
+  color: #f66;
+}
+
+.disconnect-button:hover {
+  background-color: #300;
+}
+
+@media (max-width: 768px) {
+  .wallet-connected {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+} 

@@ -1,0 +1,247 @@
+.profile-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  color: #0f0;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.profile-header {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #0f0;
+  padding-bottom: 1rem;
+}
+
+.profile-header h2 {
+  font-size: 2rem;
+  color: #0f0;
+}
+
+.profile-section {
+  background-color: #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid #0f0;
+}
+
+.profile-section h3 {
+  margin-top: 0;
+  color: #0f0;
+  font-size: 1.5rem;
+  border-bottom: 1px solid #0a0;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.user-info .wallet-info,
+.verification-status,
+.verification-info {
+  display: flex;
+  margin-bottom: 1.5rem;
+  align-items: center;
+}
+
+.user-info .label,
+.verification-status .label,
+.verification-info .label {
+  font-weight: bold;
+  color: #0c0;
+  min-width: 150px;
+}
+
+.user-info .value,
+.verification-status .value,
+.verification-info .value {
+  font-family: monospace;
+  color: #0f0;
+  background-color: #001100;
+  padding: 0.5rem;
+  border-radius: 4px;
+  word-break: break-all;
+  border: 1px solid #0a0;
+}
+
+.value.verified {
+  color: #0f0;
+  border-color: #0a0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.verification-info .value.signature-hash {
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.username-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.username-editor label {
+  font-weight: bold;
+  color: #0c0;
+}
+
+.username-input-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.username-input-group input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #0a0;
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: #001100;
+  color: #0f0;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.username-input-group button {
+  background-color: #000;
+  color: #0f0;
+  border: 1px solid #0f0;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.username-input-group button:hover {
+  background-color: #030;
+}
+
+.current-username {
+  color: #0c0;
+  margin-top: 0.5rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.stat-card {
+  background-color: #001100;
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  border: 1px solid #0a0;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  background-color: #002200;
+}
+
+.stat-value {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #0f0;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  color: #0c0;
+  font-size: 1rem;
+}
+
+.history-table-container {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.history-table th, 
+.history-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #0a0;
+}
+
+.history-table th {
+  background-color: #001100;
+  font-weight: bold;
+  color: #0f0;
+}
+
+.history-table tr:hover {
+  background-color: #001100;
+}
+
+.profile-not-connected {
+  text-align: center;
+  padding: 3rem;
+  background-color: #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  border: 1px solid #f00;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.profile-not-connected h2 {
+  color: #f66;
+}
+
+.profile-not-connected p {
+  color: #ccc;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.return-home-button {
+  background-color: #000;
+  color: #0f0;
+  border: 1px solid #0f0;
+  border-radius: 4px;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-family: 'Courier New', Courier, monospace;
+  margin-top: 1rem;
+}
+
+.return-home-button:hover {
+  background-color: #030;
+}
+
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 1rem;
+  }
+  
+  .user-info .wallet-info,
+  .verification-status,
+  .verification-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .username-input-group {
+    flex-direction: column;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+} 
