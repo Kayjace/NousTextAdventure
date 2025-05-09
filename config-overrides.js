@@ -20,18 +20,13 @@ module.exports = function override(config) {
       process: 'process/browser',
       Buffer: ['buffer', 'Buffer'],
     }),
-    // Fix process/browser.js not found issue for ESM
-    new webpack.NormalModuleReplacementPlugin(
-      /node:process/,
-      (resource) => {
-        resource.request = 'process/browser';
-      }
-    ),
-    new webpack.NormalModuleReplacementPlugin(
-      /process\/browser/,
-      require.resolve('process/browser')
-    ),
   ];
 
+  // Remove direct alias for process
+  // config.resolve.alias = {
+  //   ...config.resolve.alias,
+  //   process: require.resolve('process/browser'),
+  // };
+
   return config;
-}; 
+};
