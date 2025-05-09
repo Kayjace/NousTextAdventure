@@ -29,25 +29,6 @@ const ApiKeyPage: React.FC = () => {
 
 // 디버깅 래퍼 컴포넌트 - 라우팅과 상태를 추적
 const GameWrapper: React.FC = () => {
-  const { state, setState } = useContext(AppContext);
-  const navigate = useNavigate();
-  
-  useEffect(() => {
-    console.log("게임 래퍼 마운트됨, 현재 게임 상태:", state.gameState);
-    console.log("API 키:", state.apiKey ? "설정됨" : "설정되지 않음");
-    
-    // API 키가 없으면 홈으로 리디렉션
-    if (!state.apiKey) {
-      console.log("API 키가 없어 홈으로 리디렉션");
-      navigate('/');
-    } else {
-      // API 키가 있으면 로드 또는 생성 화면으로 이동
-      if (state.gameState !== 'playing' && state.gameState !== 'endingScreen') {
-        setState(prevState => ({ ...prevState, gameState: "loadOrCreate" }));
-      }
-    }
-  }, [state.apiKey, state.gameState, navigate, setState]);
-
   return <Game />;
 };
 
