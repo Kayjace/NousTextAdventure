@@ -13,6 +13,15 @@ module.exports = function override(config) {
     process: require.resolve('process/browser'),
   };
 
+  // Webpack 5의 fullySpecified 문제 해결
+  config.module = config.module || {};
+  config.module.rules = config.module.rules || [];
+  config.module.rules.push({
+    test: /\.m?js$/,
+    resolve: { fullySpecified: false },
+  });
+
+
   // Add plugins to provide global objects
   config.plugins = [
     ...config.plugins,
