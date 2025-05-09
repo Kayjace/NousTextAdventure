@@ -286,11 +286,10 @@ const WalletConnect: React.FC = () => {
 
   // Wallet disconnect function
   const handleDisconnect = () => {
-    if (account) {
-      // 인증 정보 초기화 함수 사용
-      clearAuthenticationData(account);
-    }
+    // 지갑 주소 저장
+    const walletAddress = account;
     
+    // 먼저 상태 초기화
     setAccount(null);
     setIsConnected(false);
     setDisplayAddress('');
@@ -298,18 +297,20 @@ const WalletConnect: React.FC = () => {
     setShowDropdown(false);
     setIsVerified(false);
     
-    // MetaMask doesn't have an official disconnect API, but we reset the connection state
-    // User may need to be guided to log out from their wallet app
-    if (window.ethereum && window.ethereum._metamask) {
-      try {
-        // Some wallets might support this method
-        window.ethereum._metamask.isUnlocked().then(() => {
-          console.log('User may need to manually logout from MetaMask');
-        });
-      } catch (e) {
-        console.log('Error attempting to disconnect MetaMask:', e);
-      }
+    // localStorage에서 API 키 초기화
+    localStorage.removeItem('apiKey');
+    
+    // 인증 정보 초기화
+    if (walletAddress) {
+      // 인증 정보 초기화 함수 사용
+      clearAuthenticationData(walletAddress);
     }
+    
+    // 현재 지갑 주소 삭제
+    localStorage.removeItem('current_wallet_address');
+    
+    // 페이지 새로고침하여 초기 상태로 돌아가기
+    window.location.href = '/';
   };
 
   const handleViewProfile = () => {
