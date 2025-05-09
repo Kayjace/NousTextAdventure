@@ -4,8 +4,9 @@ import { ethers } from 'ethers';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import './Profile.css';
-import { supabase, updateUserProfile, getUserGameResults } from '../utils/supabaseClient';
+import { supabase, getAuthenticatedClient, getUserGameResults } from '../utils/supabaseClient';
 import { updateUserProfile as updateProfile, checkAuthenticationStatus } from '../utils/walletAuth';
+import crownIcon from '../assets/crown-icon.png'; // 왕관 아이콘 이미지 필요
 
 // 오류 타입 정의
 interface ErrorState {
@@ -41,6 +42,16 @@ const Profile: React.FC = () => {
     totalTurns: 0,
     gameHistory: [] as { date: string; score: number; turns: number }[],
   });
+  
+  // 트위터 팔로우 관련 상태
+  const [twitterFollowed, setTwitterFollowed] = useState(false);
+  const [showFollowConfirm, setShowFollowConfirm] = useState(false);
+  const [followProcessing, setFollowProcessing] = useState(false);
+  
+  // 트위터 계정 설정
+  const twitterAccount = "ape_research"; // 팔로우할 트위터 계정명
+
+  const [usernameStatus, setUsernameStatus] = useState<string>('');
 
   // Check wallet connection
   useEffect(() => {
@@ -129,7 +140,7 @@ const Profile: React.FC = () => {
       // Query user information
       const { data, error } = await supabase
         .from('users')
-        .select('username')
+        .select('username, twitter_followed')
         .eq('wallet_address', address.toLowerCase())
         .single();
       
@@ -160,9 +171,14 @@ const Profile: React.FC = () => {
         return;
       }
       
-      if (data && data.username) {
-        setUsername(data.username);
-        setSavedUsername(data.username);
+      if (data) {
+        if (data.username) {
+          setUsername(data.username);
+          setSavedUsername(data.username);
+        }
+        
+        // 트위터 팔로우 상태 설정
+        setTwitterFollowed(data.twitter_followed || false);
       }
     } catch (error) {
       console.error('Error querying user data:', error);
@@ -173,6 +189,108 @@ const Profile: React.FC = () => {
     }
   };
   
+  // 트위터 팔로우 처리 함수
+  const handleTwitterFollow = () => {
+    if (!account) return;
+    
+    // 트위터 인텐트 URL로 새 창 열기
+    window.open(`https://twitter.com/intent/follow?screen_name=${twitterAccount}`, '_blank');
+    // 확인 버튼 표시
+    setShowFollowConfirm(true);
+  };
+  
+  // 트위터 팔로우 확인 처리 함수
+  const confirmTwitterFollow = async () => {
+    if (!account) return;
+    
+    try {
+      setFollowProcessing(true);
+      
+      const authToken = localStorage.getItem(`auth_token_${account}`);
+      if (!authToken) {
+        setError({
+          type: 'auth',
+          message: '인증 토큰이 만료되었습니다. 다시 로그인해주세요.'
+        });
+        setFollowProcessing(false);
+        return;
+      }
+
+      // 인증된 클라이언트 생성
+      const authClient = getAuthenticatedClient(account, authToken);
+      
+      // 트위터 팔로우 상태 업데이트
+      const { error } = await authClient
+        .from('users')
+        .update({ twitter_followed: true })
+        .eq('wallet_address', account.toLowerCase())
+        .select()
+        .single();
+      
+      if (error) {
+        console.error('트위터 팔로우 상태 업데이트 실패:', error);
+        setError({
+          type: 'data',
+          message: '트위터 팔로우 상태 업데이트 중 오류가 발생했습니다.'
+        });
+        setFollowProcessing(false);
+        return;
+      }
+      
+      setTwitterFollowed(true);
+      setShowFollowConfirm(false);
+      
+      // 성공 메시지
+      alert(t('Royal Supporter 뱃지를 획득했습니다! 이제 보상 배율 1.5배가 적용됩니다.'));
+      
+    } catch (error) {
+      console.error('트위터 팔로우 확인 중 오류:', error);
+      setError({
+        type: 'unknown',
+        message: '트위터 팔로우 확인 중 예기치 않은 오류가 발생했습니다.'
+      });
+    } finally {
+      setFollowProcessing(false);
+    }
+  };
+
+  // 트위터 팔로우 상태 로드
+  useEffect(() => {
+    const loadTwitterFollowStatus = async () => {
+      if (!account) return;
+      
+      try {
+        // 먼저 로컬 스토리지에서 확인
+        const localStatus = localStorage.getItem(`twitter_followed_${account.toLowerCase()}`);
+        if (localStatus === 'true') {
+          setTwitterFollowed(true);
+          return;
+        }
+        
+        // DB에서 상태 확인
+        const { data, error } = await supabase
+          .from('users')
+          .select('twitter_followed')
+          .eq('wallet_address', account.toLowerCase())
+          .single();
+          
+        if (error) {
+          console.error('트위터 팔로우 상태 로드 실패:', error);
+          return;
+        }
+        
+        if (data?.twitter_followed) {
+          setTwitterFollowed(true);
+          localStorage.setItem(`twitter_followed_${account.toLowerCase()}`, 'true');
+        }
+      } catch (error) {
+        console.error('트위터 팔로우 상태 확인 중 오류:', error);
+      }
+    };
+    
+    loadTwitterFollowStatus();
+  }, [account]);
+
   // Fetch game results from Supabase
   const loadGameResults = async (address: string) => {
     try {
@@ -252,52 +370,49 @@ const Profile: React.FC = () => {
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
+    setUsernameStatus('');
   };
 
   const saveUsername = async () => {
     if (!username || !account) return;
+    if (username === savedUsername) return;
     
     try {
-      // Clear any previous errors
+      setUsernameStatus(t('Saving...'));
       setError(null);
       
-      // JWT 토큰 가져오기 (RLS 정책에 필요)
       const authToken = localStorage.getItem(`auth_token_${account}`);
       if (!authToken) {
-        console.error('인증 토큰이 없습니다. 다시 로그인해주세요.');
-        setError({
-          type: 'auth',
-          message: '인증 토큰이 만료되었습니다. 다시 로그인해주세요.'
-        });
+        setError({ type: 'auth', message: '인증 토큰이 만료되었습니다. 다시 로그인해주세요.' });
+        setUsernameStatus(t('Auth error'));
+        return;
+      }
+
+      // 인증된 클라이언트 생성
+      const authClient = getAuthenticatedClient(account, authToken);
+      
+      // 사용자 정보 업데이트
+      const { error } = await authClient
+        .from('users')
+        .update({ username: username })
+        .eq('wallet_address', account.toLowerCase())
+        .select()
+        .single();
+      
+      if (error) {
+        console.error('사용자명 업데이트 실패:', error);
+        setError({ type: 'data', message: '사용자명 업데이트 오류가 발생했습니다.' });
+        setUsernameStatus(t('Save failed'));
         return;
       }
       
-      // RPC 함수를 사용하여 사용자 정보 업데이트
-      const success = await updateProfile(account, username);
-      
-      if (!success) {
-        console.error('Error saving username');
-        setError({
-          type: 'data',
-          message: '사용자명 업데이트 오류가 발생했습니다.'
-        });
-        return;
-      }
-      
-      // UI 상태 업데이트
       setSavedUsername(username);
+      setUsernameStatus(t('Saved!'));
       
-      // 로컬 스토리지에도 저장
-      localStorage.setItem(`username_${account}`, username);
-      
-      // 성공 메시지
-      alert(t('Username saved successfully!'));
     } catch (error) {
-      console.error('Error saving username:', error);
-      setError({
-        type: 'unknown',
-        message: '사용자명 저장 중 오류가 발생했습니다.'
-      });
+      console.error('사용자명 저장 중 오류:', error);
+      setError({ type: 'unknown', message: '사용자명 저장 중 오류가 발생했습니다.' });
+      setUsernameStatus(t('Save failed'));
     }
   };
 
@@ -319,11 +434,11 @@ const Profile: React.FC = () => {
     return (
       <Layout>
         <div className="profile-container">
-          <h1>{t('Profile')}</h1>
-          <div className="profile-error">
-            <p>{t('Please connect your wallet to view your profile.')}</p>
-            <button onClick={goToHome} className="button primary-button">
-              {t('Go to Home')}
+          <div className="profile-not-connected">
+            <h2>{t('Wallet Not Connected')}</h2>
+            <p>{t('Please connect your wallet from the homepage to view your profile.')}</p>
+            <button className="return-home-button" onClick={goToHome}>
+              {t('Return to Home')}
             </button>
           </div>
         </div>
@@ -334,73 +449,102 @@ const Profile: React.FC = () => {
   return (
     <Layout>
       <div className="profile-container">
-        <h1>{t('Your Profile')}</h1>
-        
         {error && (
-          <div className="profile-error">
-            <p>{t(error.message)}</p>
-            {error.type === 'connection' && (
-              <p>{t('Check your Supabase configuration in the environment variables.')}</p>
-            )}
+          <div className="profile-error-message">
+            <p><strong>{t('Error')}:</strong> {error.message}</p>
+            <button className="error-action-button" onClick={goToHome}>
+              {t('Return to Home')}
+            </button>
           </div>
         )}
         
-        <div className="profile-section">
-          <h2>{t('Wallet Address')}</h2>
-          <span className="wallet-address" data-wallet="true">{account}</span>
-        </div>
-        
-        <div className="profile-section">
-          <h2>{t('Username')}</h2>
-          <div className="username-input-group">
-            <input
-              type="text"
-              value={username}
-              onChange={handleUsernameChange}
-              placeholder={t('Enter username')}
-              className="username-input"
-            />
-            <button 
-              onClick={saveUsername}
-              disabled={!username || username === savedUsername}
-              className="button primary-button"
-            >
-              {t('Save')}
-            </button>
+        {/* 통합된 사용자 정보 및 트위터 팔로우 섹션 */}
+        <div className="profile-section user-info">
+          <h3>{t('Account & Benefits')}</h3>
+          
+          <div className="user-info-list">
+            <div className="info-item">
+              <span className="label">{t('Wallet Address')}:</span>
+              <span className="value">{account}</span>
+            </div>
+            <div className="info-item">
+              <span className="label">{t('Username')}:</span>
+              <div className="username-col">
+                <input
+                  type="text"
+                  value={username}
+                  onChange={handleUsernameChange}
+                  onBlur={saveUsername}
+                  onKeyDown={e => { if (e.key === 'Enter') saveUsername(); }}
+                  placeholder={t('Enter username')}
+                  className="username-input"
+                />
+                <div className="username-meta">
+                  <span className="current-username">{t('Current')}: {savedUsername || t('Not set')}</span>
+                  {usernameStatus && <span className="username-status">{usernameStatus}</span>}
+                </div>
+              </div>
+            </div>
+            <div className="info-item follow-row">
+              {twitterFollowed ? (
+                <div className="royal-supporter-badge right-align">
+                  <img src={crownIcon} alt="Royal Supporter" className="badge-icon" />
+                  <span className="badge-title">{t('Royal Supporter')}</span>
+                  <div className="badge-tooltip">
+                    {t('Royal Supporter Badge - Reward Multiplier: x1.5 (You will have x1.5 multiplier from future reward distribution and *secret* access to future WL raffles from my community projects)')}
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <span className="follow-text">{t('Follow for get Royal supporter badge')}</span>
+                  {showFollowConfirm ? (
+                    <button 
+                      className="twitter-follow-btn"
+                      onClick={confirmTwitterFollow}
+                      disabled={followProcessing}
+                    >
+                      {followProcessing ? t('Processing...') : t('Confirm')}
+                    </button>
+                  ) : (
+                    <button 
+                      className="twitter-follow-btn"
+                      onClick={handleTwitterFollow}
+                    >
+                      {t('Follow')}
+                    </button>
+                  )}
+                </>
+              )}
+            </div>
           </div>
-          {savedUsername && (
-            <p className="current-username">
-              {t('Current username')}: <span>{savedUsername}</span>
-            </p>
-          )}
         </div>
         
-        <div className="profile-section">
-          <h2>{t('Game Statistics')}</h2>
-          <div className="stats-grid">
+        {/* 게임 통계 섹션 */}
+        <div className="profile-section game-stats">
+          <h3>{t('Game Statistics')}</h3>
+          
+          <div className="stats-grid two-per-row">
             <div className="stat-item">
-              <span className="stat-label">{t('Games Played')}</span>
+              <span className="stat-label">{t('Games Played')}:</span>
               <span className="stat-value">{gameStats.gamesPlayed}</span>
             </div>
             <div className="stat-item">
-              <span className="stat-label">{t('Total Score')}</span>
+              <span className="stat-label">{t('Total Score')}:</span>
               <span className="stat-value">{gameStats.totalScore}</span>
             </div>
             <div className="stat-item">
-              <span className="stat-label">{t('High Score')}</span>
+              <span className="stat-label">{t('High Score')}:</span>
               <span className="stat-value">{gameStats.highScore}</span>
             </div>
             <div className="stat-item">
-              <span className="stat-label">{t('Total Turns')}</span>
+              <span className="stat-label">{t('Total Turns')}:</span>
               <span className="stat-value">{gameStats.totalTurns}</span>
             </div>
           </div>
-        </div>
-        
-        {gameStats.gameHistory.length > 0 && (
-          <div className="profile-section">
-            <h2>{t('Recent Games')}</h2>
-            <table className="game-history-table">
+          
+          <h4>{t('Recent Games')}</h4>
+          {gameStats.gameHistory.length > 0 ? (
+            <table className="history-table">
               <thead>
                 <tr>
                   <th>{t('Date')}</th>
@@ -418,8 +562,10 @@ const Profile: React.FC = () => {
                 ))}
               </tbody>
             </table>
-          </div>
-        )}
+          ) : (
+            <p className="no-history">{t('No game history yet.')}</p>
+          )}
+        </div>
       </div>
     </Layout>
   );

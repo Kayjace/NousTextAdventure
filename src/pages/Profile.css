@@ -6,7 +6,39 @@
   font-family: 'Courier New', Courier, monospace;
 }
 
-/* 오류 메시지 스타일 */
+/* 프로필 헤더 */
+.profile-header {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #0f0;
+  padding-bottom: 1rem;
+}
+
+.profile-header h2 {
+  font-size: 2rem;
+  color: #0f0;
+  margin: 0;
+}
+
+/* 섹션 공통 스타일 */
+.profile-section {
+  background-color: #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid #0f0;
+}
+
+.profile-section h3 {
+  margin-top: 0;
+  color: #0f0;
+  font-size: 1.5rem;
+  border-bottom: 1px solid #0a0;
+  padding-bottom: 0.7rem;
+  margin-bottom: 1.2rem;
+}
+
+/* 오류 메시지 */
 .profile-error-message {
   background-color: rgba(150, 0, 0, 0.1);
   border: 1px solid #f00;
@@ -14,7 +46,6 @@
   padding: 1rem;
   margin-bottom: 1.5rem;
   border-radius: 8px;
-  font-family: 'Courier New', Courier, monospace;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -33,7 +64,6 @@
   padding: 0.5rem 1rem;
   cursor: pointer;
   transition: background-color 0.3s;
-  font-family: 'Courier New', Courier, monospace;
   align-self: flex-start;
 }
 
@@ -41,184 +71,250 @@
   background-color: #300;
 }
 
-.profile-header {
-  margin-bottom: 2rem;
-  border-bottom: 1px solid #0f0;
-  padding-bottom: 1rem;
-}
-
-.profile-header h2 {
-  font-size: 2rem;
-  color: #0f0;
-}
-
-.profile-section {
-  background-color: #000;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  border: 1px solid #0f0;
-}
-
-.profile-section h3 {
-  margin-top: 0;
-  color: #0f0;
-  font-size: 1.5rem;
-  border-bottom: 1px solid #0a0;
-  padding-bottom: 0.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.user-info .wallet-info,
-.verification-status,
-.verification-info {
-  display: flex;
-  margin-bottom: 1.5rem;
-  align-items: center;
-}
-
-.user-info .label,
-.verification-status .label,
-.verification-info .label {
-  font-weight: bold;
-  color: #0c0;
-  min-width: 150px;
-}
-
-.user-info .value,
-.verification-status .value,
-.verification-info .value {
-  font-family: monospace;
-  color: #0f0;
-  background-color: #001100;
-  padding: 0.5rem;
-  border-radius: 4px;
-  word-break: break-all;
-  border: 1px solid #0a0;
-}
-
-.value.verified {
-  color: #0f0;
-  border-color: #0a0;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.verification-info .value.signature-hash {
-  font-size: 0.9rem;
-  letter-spacing: 0.5px;
-}
-
-.username-editor {
+/* 사용자 정보 리스트 */
+.user-info-list {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.7rem;
 }
 
-.username-editor label {
-  font-weight: bold;
-  color: #0c0;
-}
-
-.username-input-group {
+.info-item {
   display: flex;
-  gap: 0.5rem;
+  align-items: flex-start;
+  gap: 0.7rem;
+  width: 100%;
+  margin-bottom: 1.1rem;
 }
 
-.username-input-group input {
-  flex: 1;
-  padding: 0.5rem;
+.label {
+  min-width: 120px;
+  font-size: 1.08rem;
+  font-weight: bold;
+  color: #0f0;
+}
+
+.value {
+  font-size: 1.08rem;
+  font-weight: bold;
+  color: #0f0;
+  background: #001100;
+  padding: 0.6rem 1rem;
+  border-radius: 4px;
   border: 1px solid #0a0;
-  border-radius: 4px;
-  font-size: 1rem;
-  background-color: #001100;
-  color: #0f0;
-  font-family: 'Courier New', Courier, monospace;
+  white-space: nowrap;
 }
 
-.username-input-group button {
-  background-color: #000;
-  color: #0f0;
-  border: 1px solid #0f0;
+.username-input {
+  flex: 1;
+  height: 38px;
+  font-size: 1.08rem;
   border-radius: 4px;
-  padding: 0.5rem 1rem;
+  box-sizing: border-box;
+  border: 1.5px solid #0f0;
+  padding: 0 1rem;
+  background: #001100;
+  color: #0f0;
+  font-family: inherit;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.username-input:focus {
+  outline: none;
+  border-color: #39ff14;
+  box-shadow: 0 0 0 2px rgba(0,255,0,0.18);
+}
+
+.username-status-inline {
+  color: #0f0;
+  font-size: 0.97rem;
+  margin-left: 0.7rem;
+  opacity: 0.85;
+  min-width: 60px;
+}
+
+.current-username-inline {
+  color: #0f0;
+  font-size: 0.97rem;
+  margin-left: 0.7rem;
+  opacity: 0.7;
+  font-style: italic;
+  min-width: 100px;
+}
+
+.info-item.follow-row {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 0;
+}
+
+.follow-text {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #0f0;
+  font-size: 1.08rem;
+}
+
+.twitter-follow-btn {
+  min-width: 64px;
+  max-width: 90px;
+  padding: 0 0.7rem;
+  font-weight: bold;
+  font-size: 1.08rem;
+  height: 38px;
+  border-radius: 4px;
+  box-sizing: border-box;
+  background: #1DA1F2;
+  color: #fff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   transition: background-color 0.3s;
-  font-family: 'Courier New', Courier, monospace;
 }
 
-.username-input-group button:hover {
-  background-color: #030;
+.twitter-follow-btn:hover {
+  background: #0c85d0;
 }
 
-.current-username {
-  color: #0c0;
-  margin-top: 0.5rem;
+/* Royal Supporter 뱃지 */
+.royal-supporter-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  position: relative;
+  padding: 0;
+  flex-grow: 1;
 }
 
+.royal-supporter-badge.right-align {
+  margin-left: auto;
+}
+
+.badge-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.badge-title {
+  font-size: 1rem;
+  color: #daa520;
+  font-weight: bold;
+}
+
+.royal-supporter-badge:hover .badge-tooltip {
+  display: block;
+}
+
+.badge-tooltip {
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  width: 260px;
+  background-color: rgba(0, 0, 0, 0.95);
+  color: #0f0;
+  padding: 0.8rem;
+  border-radius: 4px;
+  border: 1px solid #0f0;
+  font-size: 0.9rem;
+  z-index: 100;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+  margin-bottom: 8px;
+}
+
+.badge-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 20px;
+  border-width: 8px;
+  border-style: solid;
+  border-color: #0f0 transparent transparent transparent;
+}
+
+/* 게임 통계 */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
+  gap: 1.2rem;
 }
 
-.stat-card {
-  background-color: #001100;
-  border-radius: 8px;
-  padding: 1.5rem;
-  text-align: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s, box-shadow 0.3s;
-  border: 1px solid #0a0;
+.stats-grid.two-per-row {
+  grid-template-columns: repeat(2, 1fr);
 }
 
-.stat-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  background-color: #002200;
+.stat-item {
+  background-color: rgba(0, 30, 0, 0.3);
+  padding: 1rem;
+  border-radius: 6px;
+  border-left: 3px solid #0f0;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.stat-value {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #0f0;
-  margin-bottom: 0.5rem;
+.stat-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 255, 0, 0.15);
 }
 
 .stat-label {
   color: #0c0;
-  font-size: 1rem;
+  font-size: 1.15rem;
+  display: block;
+  margin-bottom: 0.5rem;
 }
 
-.history-table-container {
-  overflow-x: auto;
-  margin-top: 1rem;
+.stat-value {
+  color: #0f0;
+  font-size: 2.1rem;
+  font-weight: bold;
 }
 
+.profile-section.game-stats h4 {
+  color: #0f0;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  border-bottom: 1px solid #0a0;
+  padding-bottom: 0.5rem;
+}
+
+/* 히스토리 테이블 */
 .history-table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 1rem;
 }
 
 .history-table th, 
 .history-table td {
   padding: 0.75rem 1rem;
   text-align: left;
-  border-bottom: 1px solid #0a0;
+  border-bottom: 1px solid rgba(0, 255, 0, 0.2);
 }
 
 .history-table th {
-  background-color: #001100;
+  background-color: rgba(0, 30, 0, 0.4);
   font-weight: bold;
   color: #0f0;
 }
 
 .history-table tr:hover {
-  background-color: #001100;
+  background-color: rgba(0, 30, 0, 0.2);
 }
 
+.no-history {
+  color: #aaa;
+  font-style: italic;
+  text-align: center;
+  padding: 1rem;
+}
+
+/* 지갑 미연결 상태 */
 .profile-not-connected {
   text-align: center;
   padding: 3rem;
@@ -234,6 +330,7 @@
 
 .profile-not-connected h2 {
   color: #f66;
+  margin: 0;
 }
 
 .profile-not-connected p {
@@ -251,7 +348,6 @@
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s;
-  font-family: 'Courier New', Courier, monospace;
   margin-top: 1rem;
 }
 
@@ -259,33 +355,7 @@
   background-color: #030;
 }
 
-@media (max-width: 768px) {
-  .profile-container {
-    padding: 1rem;
-  }
-  
-  .user-info .wallet-info,
-  .verification-status,
-  .verification-info {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-  
-  .username-input-group {
-    flex-direction: column;
-  }
-  
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .profile-error-message {
-    padding: 0.75rem;
-  }
-}
-
-/* 프로필 로딩 스타일 */
+/* 로딩 상태 */
 .profile-loading {
   display: flex;
   justify-content: center;
@@ -299,15 +369,349 @@
   color: #0f0;
 }
 
-/* 대게 다음과 같은 클래스들에 after 가상요소로 화살표가 추가됨 */
-.wallet-info .value::after,
-.user-info .wallet-info .value::after,
-.verification-status .value::after,
-.verification-info .value::after {
-  display: none !important; /* 화살표를 표시하지 않도록 설정 */
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 1rem;
+  }
+  
+  .stats-grid.two-per-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .info-item {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+  
+  .info-item .label {
+    min-width: auto;
+  }
+  
+  .info-item .input-wrap {
+    width: 100%;
+  }
+  
+  .twitter-follow-container {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .badge-tooltip {
+    width: 200px;
+  }
 }
 
-/* 모든 after 가상 요소 대상으로 화살표 제거 */
-.user-info *::after {
-  display: none !important;
+.info-item.input-row,
+.info-item.follow-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.label {
+  min-width: 120px;
+  font-size: 1.08rem;
+  font-weight: bold;
+  color: #0f0;
+}
+
+.username-input,
+.save-username-btn,
+.twitter-follow-btn {
+  height: 36px;
+  font-size: 1.08rem;
+  border-radius: 4px;
+  box-sizing: border-box;
+  border: 1px solid #0a0;
+  padding: 0 1rem;
+  vertical-align: middle;
+}
+
+.username-input {
+  flex: 1;
+  background: #001100;
+  color: #0f0;
+  font-family: inherit;
+}
+
+.save-username-btn,
+.twitter-follow-btn {
+  min-width: 64px;
+  max-width: 90px;
+  padding: 0 0.7rem;
+  font-weight: bold;
+  background: #000;
+  color: #0f0;
+  border: 1px solid #0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.twitter-follow-btn {
+  background: #1DA1F2;
+  color: #fff;
+}
+
+.twitter-follow-btn:hover {
+  background: #0c85d0;
+}
+
+.follow-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1.08rem;
+  color: #0f0;
+  flex: 1;
+}
+
+.info-item.follow-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  justify-content: space-between;
 } 
+
+* {
+    box-sizing: border-box;
+  }
+
+  .save-username-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #001100;
+  }
+  
+  .username-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 255, 0, 0.3);
+  }
+  
+  @media (max-width: 768px) {
+    .info-item.input-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .info-item .label {
+      margin-bottom: 0.5rem;
+    }
+    
+    .input-container {
+      width: 100%;
+      display: flex;
+    }
+  }
+  .info-item.follow-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .follow-text {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #0f0;
+    font-size: 1rem;
+  }
+  .info-item.input-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+  }
+  
+  .info-item .label {
+    min-width: 130px;
+    flex-shrink: 0; /* 라벨 너비 유지 */
+  }
+  
+  .username-input {
+    flex: 1;
+    background: #001100;
+    color: #0f0;
+    font-family: inherit;
+    border: 1px solid #0a0;
+  }
+  /* 입력 필드와 버튼 높이 통일 */
+.username-input,
+.save-username-btn,
+.twitter-follow-btn {
+  height: 38px; /* 모든 요소의 높이를 38px로 통일 */
+  box-sizing: border-box;
+  font-size: 1rem;
+  border-radius: 4px;
+  padding: 0 1rem;
+  line-height: 38px; /* 텍스트 수직 정렬을 위해 추가 */
+}
+
+/* 버튼 스타일 통일 */
+.save-username-btn,
+.twitter-follow-btn {
+  min-width: 64px;
+  padding: 0 0.7rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  border: 1px solid;
+}
+
+.save-username-btn {
+  background: #000;
+  color: #0f0;
+  border-color: #0f0;
+}
+
+.twitter-follow-btn {
+  background: #1DA1F2;
+  color: #fff;
+  border-color: transparent;
+}
+/* 입력 필드와 버튼 높이 통일 */
+.username-input,
+.save-username-btn,
+.twitter-follow-btn {
+  height: 38px; /* 모든 요소의 높이를 38px로 통일 */
+  box-sizing: border-box;
+  font-size: 1rem;
+  border-radius: 4px;
+  padding: 0 1rem;
+  line-height: 38px; /* 텍스트 수직 정렬을 위해 추가 */
+}
+
+/* 버튼 스타일 통일 */
+.save-username-btn,
+.twitter-follow-btn {
+  min-width: 64px;
+  padding: 0 0.7rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  border: 1px solid;
+}
+
+.save-username-btn {
+  background: #000;
+  color: #0f0;
+  border-color: #0f0;
+}
+
+.twitter-follow-btn {
+  background: #1DA1F2;
+  color: #fff;
+  border-color: transparent;
+}
+.input-container {
+  display: flex;
+  flex: 1;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.username-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 130px;
+  margin-top: 0.2rem;
+  width: calc(100% - 130px);
+}
+.current-username {
+  color: #0f0;
+  font-size: 0.97rem;
+}
+.username-status {
+  color: #0f0;
+  font-size: 0.97rem;
+  margin-left: 1rem;
+}
+
+.username-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: rgba(0, 20, 0, 0.15);
+  border: 1px solid #0a0;
+  border-radius: 8px;
+  padding: 1.1rem 1.2rem 0.8rem 1.2rem;
+  margin-bottom: 1.2rem;
+  max-width: 480px;
+}
+.username-label {
+  color: #0f0;
+  font-size: 1.08rem;
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+}
+.username-input {
+  height: 40px;
+  font-size: 1.08rem;
+  border-radius: 4px;
+  box-sizing: border-box;
+  border: 1.5px solid #0f0;
+  padding: 0 1rem;
+  background: #001100;
+  color: #0f0;
+  font-family: inherit;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.username-input:focus {
+  outline: none;
+  border-color: #39ff14;
+  box-shadow: 0 0 0 2px rgba(0,255,0,0.18);
+}
+.username-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.2rem;
+  font-size: 0.97rem;
+  color: #0f0;
+  opacity: 0.85;
+}
+.current-username {
+  font-style: italic;
+}
+.username-status {
+  margin-left: 1.2rem;
+  font-weight: bold;
+}
+
+.username-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.username-meta {
+  display: flex;
+  gap: 1.2rem;
+  font-size: 0.97rem;
+  color: #0f0;
+  opacity: 0.7;
+  margin-top: 0.1rem;
+}
+.current-username {
+  font-style: italic;
+}
+.username-status {
+  font-weight: bold;
+  opacity: 0.9;
+}

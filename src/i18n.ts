@@ -96,7 +96,36 @@ const resources = {
         'Refresh': 'Refresh',
         'Loading stories...': 'Loading stories...',
         'Failed to load stories': 'Failed to load stories',
-        'Saved': 'Saved'
+        'Saved': 'Saved',
+        
+        // Profile - Twitter follow
+        'Account & Benefits': 'Account & Benefits',
+        'Wallet Address': 'Wallet Address',
+        'Username': 'Username',
+        'Enter username': 'Enter username',
+        'Save': 'Save',
+        'Your Profile': 'Your Profile',
+        'Error': 'Error',
+        'Wallet Not Connected': 'Wallet Not Connected',
+        'Please connect your wallet from the homepage to view your profile.': 'Please connect your wallet from the homepage to view your profile.',
+        'Game Statistics': 'Game Statistics',
+        'Games Played': 'Games Played',
+        'Total Score': 'Total Score',
+        'High Score': 'High Score',
+        'Total Turns': 'Total Turns',
+        'Recent Games': 'Recent Games',
+        'Date': 'Date',
+        'Score': 'Score',
+        'Turns': 'Turns',
+        'No game history yet.': 'No game history yet.',
+        'Follow for Royal Supporter Badge': 'Follow for Royal Supporter Badge',
+        'Did you follow?': 'Did you follow?',
+        'Confirm': 'Confirm',
+        'Processing...': 'Processing...',
+        'Follow': 'Follow',
+        'Royal Supporter': 'Royal Supporter',
+        'Royal Supporter Badge - Reward Multiplier: x1.5 (You will have x1.5 multiplier from future reward distribution and *secret* access to future WL raffles from my community projects)': 'Royal Supporter Badge - Reward Multiplier: x1.5 (You will have x1.5 multiplier from future reward distribution and *secret* access to future WL raffles from my community projects)',
+        'You have earned the Royal Supporter badge! You now have a 1.5x reward multiplier.': 'You have earned the Royal Supporter badge! You now have a 1.5x reward multiplier.'
       }
     },
     kr: {
@@ -194,7 +223,36 @@ const resources = {
         'Refresh': '새로고침',
         'Loading stories...': '스토리를 불러오는 중...',
         'Failed to load stories': '스토리를 불러오는 데 실패했습니다',
-        'Saved': '저장'
+        'Saved': '저장',
+        
+        // Profile - Twitter follow
+        'Account & Benefits': '계정 및 혜택',
+        'Wallet Address': '지갑 주소',
+        'Username': '사용자명',
+        'Enter username': '사용자명 입력',
+        'Save': '저장',
+        'Your Profile': '내 프로필',
+        'Error': '오류',
+        'Wallet Not Connected': '지갑이 연결되지 않음',
+        'Please connect your wallet from the homepage to view your profile.': '프로필을 보려면 홈페이지에서 지갑을 연결하세요.',
+        'Game Statistics': '게임 통계',
+        'Games Played': '게임 횟수',
+        'Total Score': '총 점수',
+        'High Score': '최고 점수',
+        'Total Turns': '총 턴 수',
+        'Recent Games': '최근 게임',
+        'Date': '날짜',
+        'Score': '점수',
+        'Turns': '턴 수',
+        'No game history yet.': '아직 게임 기록이 없습니다.',
+        'Follow for Royal Supporter Badge': '로열 서포터 뱃지 획득하기',
+        'Did you follow?': '팔로우하셨나요?',
+        'Confirm': '확인',
+        'Processing...': '처리 중...',
+        'Follow': '팔로우',
+        'Royal Supporter': '로열 서포터',
+        'Royal Supporter Badge - Reward Multiplier: x1.5 (You will have x1.5 multiplier from future reward distribution and *secret* access to future WL raffles from my community projects)': '로열 서포터 뱃지 - 보상 배율: x1.5 (향후 보상 분배에서 1.5배 배율과 커뮤니티 프로젝트의 향후 WL 래플에 *비밀* 접근 권한을 갖게 됩니다)',
+        'You have earned the Royal Supporter badge! You now have a 1.5x reward multiplier.': '로열 서포터 뱃지를 획득하셨습니다! 이제 1.5배 보상 배율이 적용됩니다.'
       }
     }
   };
