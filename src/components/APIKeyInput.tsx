@@ -17,8 +17,8 @@ const APIKeyInput: React.FC = () => {
   // Submit 이후 상태 변화 감지
   useEffect(() => {
     if (submitAttempted && state.gameState === "loadOrCreate") {
-      console.log("게임 상태가 변경됨:", state.gameState);
-      console.log("API 키가 설정됨:", state.apiKey ? "설정됨" : "설정되지 않음");
+      console.log("Game state changed:", state.gameState);
+      console.log("API key is set:", state.apiKey ? "Yes" : "No");
       
       // 명시적으로 페이지 이동
       navigate('/game');
@@ -28,26 +28,35 @@ const APIKeyInput: React.FC = () => {
   // Nous API 검증 함수
   const testNousAPI = async (key: string) => {
     try {
-      const response = await fetch('https://api.nousresearch.com/v1/chat/completions', {
+      console.log("Testing API key with Nous Research API...");
+      
+      const response = await fetch('https://inference-api.nousresearch.com/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${key}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          model: 'nous-hermes-2-mixtral-8x7b-dpo',
-          messages: [{ role: 'user', content: 'hi' }],
-          max_tokens: 1
+          model: 'Hermes-3-Llama-3.1-70B',
+          messages: [
+            { role: 'system', content: 'You are a helpful assistant.' },
+            { role: 'user', content: 'hi' }
+          ],
+          max_tokens: 256
         })
       });
-
+      
+      console.log("API response status:", response.status);
+      
       if (!response.ok) {
-        throw new Error(`API 응답 오류: ${response.status}`);
+        console.error("API validation failed with status:", response.status);
+        return false;
       }
-
+      
+      console.log("API key validation successful");
       return true;
     } catch (error) {
-      console.error('API 키 검증 실패:', error);
+      console.error('API key validation failed:', error);
       return false;
     }
   };
@@ -55,17 +64,17 @@ const APIKeyInput: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     
-    console.log("API 키 제출 시도:", apiKey ? "API 키 있음" : "API 키 없음");
+    console.log("API key submission attempt:", apiKey ? "Key exists" : "No key");
     
     if (!apiKey.trim()) {
-      alert(t('API 키를 입력해주세요.'));
+      alert('Please enter your API key.');
       return;
     }
     
     setIsLoading(true);
     
     try {
-      // API 키 유효성 검증
+      // 실제 API 검증 수행
       const isValid = await testNousAPI(apiKey);
       
       if (isValid) {
@@ -79,13 +88,13 @@ const APIKeyInput: React.FC = () => {
         // 제출 시도 플래그 설정
         setSubmitAttempted(true);
         
-        console.log("상태 업데이트 완료. 게임 상태로 전환 중...");
+        console.log("State updated. Transitioning to game state...");
       } else {
-        alert(t('유효하지 않은 API 키입니다. 다시 확인해주세요.'));
+        alert('Invalid API key. Please check and try again.');
       }
     } catch (error) {
-      console.error('API 키 검증 중 오류:', error);
-      alert(t('API 키 검증 중 오류가 발생했습니다.'));
+      console.error('Error validating API key:', error);
+      alert('An error occurred while validating your API key.');
     } finally {
       setIsLoading(false);
     }
