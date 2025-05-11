@@ -21,6 +21,27 @@ const fetchCharacterTraitsAndBio = async (
   const maxWords = 70;
   const language = i18n.language;
 
+  // 이름 기반 성별 결정 (영어 프롬프트)
+  const genderPrompt = `
+    Given the character name "${chosenCharacter}", determine the most natural gender for this character based on cultural and linguistic context.
+    Respond with only one of the following: "male", "female", or "non-binary".
+    Please output only JSON:
+    {
+      "gender": "male|female|non-binary"
+    }
+  `;
+  const genderResponse = await chatGPTRequest(genderPrompt, apiKey, provider);
+  const genderData = processJson<{ gender: string }>(genderResponse[0]);
+  const determinedGenderEn = genderData.gender;
+
+  // 영어 -> 한글 변환 함수
+  const genderEnToKr = (gender: string) => {
+    if (gender === 'male') return '남성';
+    if (gender === 'female') return '여성';
+    if (gender === 'non-binary') return '논바이너리';
+    return gender;
+  };
+
   // 언어에 따라 다른 프롬프트 생성
   let characterTraitsAndBioPrompt = '';
   
@@ -30,7 +51,7 @@ const fetchCharacterTraitsAndBio = async (
     '${chosenGenre}' 장르와 주인공 '${chosenCharacter}'을(를) 기반으로 텍스트 어드벤처 게임을 위한 상세한 캐릭터 프로필을 작성하세요. 다음 요소를 포함하세요:
   
     1. 좋은 점과 나쁜 점이 섞인 다섯 가지 성격 특성. 모험적인 성격부터 평범한 성격까지 다양하게 고려하세요.
-    2. 캐릭터의 성별(남성, 여성, 논바이너리).
+    2. 캐릭터의 성별은 "${genderEnToKr(determinedGenderEn)}"입니다.
     3. 캐릭터의 독특한 기술과 능력을 강조하는 짧은 소개글(최대 ${maxWords} 단어). 2-4개의 능력이나 기술을 포함하세요. 이 능력들은 장르에 따라 뛰어난 재능, 배운 기술, 초자연적 힘일 수 있습니다. 진부한 표현은 피하고, 장르에서 덜 사용되는 설명을 생각하세요. 특정 장소나 미래 계획은 언급하지 마세요.
     4. 눈 색깔, 머리 색깔, 피부 색깔 등 캐릭터 얼굴의 주요 시각적 특징 5가지.
   
@@ -39,7 +60,7 @@ const fetchCharacterTraitsAndBio = async (
   
     {
       "characterQuirks": ["특성1", "특성2", "특성3", "특성4", "특성5"],
-      "characterGender": "성별",
+      "characterGender": "${genderEnToKr(determinedGenderEn)}",
       "characterBio": "상세한 소개글, 최대 ${maxWords} 단어",
       "characterFacialFeatures": ["시각적 특징1", "시각적 특징2", "시각적 특징3", "시각적 특징4", "시각적 특징5"]
     }
@@ -49,7 +70,7 @@ const fetchCharacterTraitsAndBio = async (
     Construct a detailed character profile for a text-adventure game based on the genre '${chosenGenre}' and the main character '${chosenCharacter}'. Include these three components:
 
     1. Five personality traits that display a mix of good and bad qualities. Consider various personalities from adventurous to mundane.
-    2. a gender for the character, male, female, or non-binary.
+    2. The character's gender is "${determinedGenderEn}".
     3. A short bio (up to ${maxWords} words) emphasizing the character's unique skills and abilities. Incorporate 2-4 abilities or skills, which may be exceptional talents, learned skills, or supernatural powers, depending on the genre. Avoid clichés by thinking of less commonly used character descriptions in the genre. Don't mention specific locations or future plans.
     4. Key visual facial features of the characters face, such as eye color, hair color, skin color, or other distinguishing or interesting features.
     
@@ -58,7 +79,7 @@ const fetchCharacterTraitsAndBio = async (
     
     {
       "characterQuirks": ["quirk-1", "quirk-2", "quirk-3", "quirk-4", "quirk-5"],
-      "characterGender": "specified gender",
+      "characterGender": "${determinedGenderEn}",
       "characterBio": "detailed biography, max words 150",
       "characterFacialFeatures": ["feature1", "feature2", "feature3", "feature4", "feature5"]
     }

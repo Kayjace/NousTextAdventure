@@ -150,7 +150,7 @@ const resources = {
         
         // CharacterSelection
         'Select a character:': '캐릭터 선택:',
-        'Enter first and last name or generate a random name.': '이름(되도록 영문명) 입력하거나 랜덤으로 생성하기.',
+        'Enter first and last name or generate a random name.': '이름 입력하거나 랜덤으로 생성하기.',
         'First Name': '이름',
         'Last Name': '성',
         'Random': '랜덤',
