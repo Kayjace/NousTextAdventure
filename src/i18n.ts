@@ -125,7 +125,14 @@ const resources = {
         'Follow': 'Follow',
         'Royal Supporter': 'Royal Supporter',
         'Royal Supporter Badge - Reward Multiplier: x1.5 (You will have x1.5 multiplier from future reward distribution and *secret* access to future WL raffles from my community projects)': 'Royal Supporter Badge - Reward Multiplier: x1.5 (You will have x1.5 multiplier from future reward distribution and *secret* access to future WL raffles from my community projects)',
-        'You have earned the Royal Supporter badge! You now have a 1.5x reward multiplier.': 'You have earned the Royal Supporter badge! You now have a 1.5x reward multiplier.'
+        'You have earned the Royal Supporter badge! You now have a 1.5x reward multiplier.': 'You have earned the Royal Supporter badge! You now have a 1.5x reward multiplier.',
+        
+        // Ending Types
+        'Heroic Victory': 'Heroic Victory',
+        'Pyrrhic Victory': 'Pyrrhic Victory',
+        'Antihero Triumph': 'Antihero Triumph',
+        'Tragic Downfall': 'Tragic Downfall',
+        'Bittersweet Resolution': 'Bittersweet Resolution'
       }
     },
     kr: {
@@ -252,7 +259,14 @@ const resources = {
         'Follow': '팔로우',
         'Royal Supporter': '로열 서포터',
         'Royal Supporter Badge - Reward Multiplier: x1.5 (You will have x1.5 multiplier from future reward distribution and *secret* access to future WL raffles from my community projects)': '로열 서포터 뱃지 - 보상 배율: x1.5 (향후 보상 분배에서 1.5배 배율과 커뮤니티 프로젝트의 향후 WL 래플에 *비밀* 접근 권한을 갖게 됩니다)',
-        'You have earned the Royal Supporter badge! You now have a 1.5x reward multiplier.': '로열 서포터 뱃지를 획득하셨습니다! 이제 1.5배 보상 배율이 적용됩니다.'
+        'You have earned the Royal Supporter badge! You now have a 1.5x reward multiplier.': '로열 서포터 뱃지를 획득하셨습니다! 이제 1.5배 보상 배율이 적용됩니다.',
+        
+        // Ending Types
+        'Heroic Victory': '영웅적 승리',
+        'Pyrrhic Victory': '피로스의 승리',
+        'Antihero Triumph': '안티히어로의 승리',
+        'Tragic Downfall': '비극적 몰락',
+        'Bittersweet Resolution': '씁쓸한 결말'
       }
     }
   };

@@ -182,13 +182,13 @@ const WalletConnect: React.FC = () => {
   const requestSignature = async (address: string, ethProvider: ethers.BrowserProvider) => {
     // Prevent duplicate signature requests
     if (isSigningMessage) {
-      console.log('이미 서명 중입니다. 중복 요청을 무시합니다.');
+      console.log('Already signing. Ignoring duplicate request.');
       throw new Error('Signature process already in progress.');
     }
     
     try {
       setIsSigningMessage(true);
-      console.log('서명 요청 시작:', address);
+      console.log('Starting signature request:', address);
       
       // 1. 서버에서 논스 가져오기 (사용자가 없으면 자동 생성)
       const nonce = await getNonce(address);

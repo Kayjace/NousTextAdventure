@@ -36,18 +36,49 @@
   table-layout: fixed;
 }
 
-.leaderboard-table th,
-.leaderboard-table td {
-  padding: 0.75rem;
-  text-align: left;
-  border-bottom: 1px solid rgba(0, 255, 0, 0.3);
+/* 컬럼 너비 설정 */
+.leaderboard-table th:nth-child(1) {
+  width: 5%; /* Rank 컬럼 */
 }
 
+.leaderboard-table th:nth-child(2) {
+  width: 20%; /* Character 컬럼 */
+}
+
+.leaderboard-table th:nth-child(3) {
+  width: 20%; /* Genre 컬럼 */
+}
+
+.leaderboard-table th:nth-child(4) {
+  width: 8%; /* Score 컬럼 */
+}
+
+.leaderboard-table th:nth-child(5) {
+  width: 7%; /* Turns 컬럼 */
+}
+
+.leaderboard-table th:nth-child(6) {
+  width: 25%; /* Ending 컬럼 */
+}
+
+.leaderboard-table th:nth-child(7) {
+  width: 15%; /* Date 컬럼 */
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid rgba(0, 255, 0, 0.3);
+  text-align: center; /* 모든 셀 가운데 정렬 */
+}
+
+/* 테이블 헤더 스타일 */
 .leaderboard-table th {
   background-color: rgba(0, 50, 0, 0.6);
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 1px;
+  padding: 1rem 0.5rem;
 }
 
 .leaderboard-table tr:hover {
@@ -69,17 +100,34 @@
   font-weight: bold;
 }
 
+/* 특정 컬럼만 텍스트 축약 설정 */
+.leaderboard-table td:nth-child(2),
+.leaderboard-table td:nth-child(3) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .rank-cell {
   font-weight: bold;
-  text-align: center;
-  width: 60px;
+}
+
+.character-cell {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .score-cell {
   font-weight: bold;
-  text-align: center;
   color: #0f0;
   text-shadow: 0 0 5px #0f0;
+}
+
+.genre-cell {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .leaderboard-loading,

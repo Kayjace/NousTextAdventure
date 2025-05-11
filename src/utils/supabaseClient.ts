@@ -44,7 +44,7 @@ class SupabaseManager {
   // 인증된 클라이언트 가져오기
   public getAuthenticatedClient(walletAddress: string, authToken: string) {
     if (!walletAddress || !authToken) {
-      console.warn('인증 정보가 없습니다. 기본 클라이언트를 반환합니다.');
+      console.warn('No authentication information. Returning default client.');
       return this.baseClient;
     }
     
@@ -97,7 +97,7 @@ export const getAuthenticatedClient = (walletAddress: string, authToken: string)
 // 사용자 등록 및 로그인 기능 (서명 검증 포함)
 export const authenticateWithWallet = async (walletAddress: string, authToken: string, signatureMessage?: string, signature?: string) => {
   try {
-    console.log('지갑 인증 시작:', walletAddress);
+    console.log('Starting wallet authentication:', walletAddress);
     
     // 대소문자 통일
     const normalizedAddress = walletAddress.toLowerCase();
@@ -115,10 +115,10 @@ export const authenticateWithWallet = async (walletAddress: string, authToken: s
     );
     
     if (error) {
-      console.error('사용자 등록/업데이트 실패:', error);
+      console.error('Failed to register/update user:', error);
       
       // 일반 클라이언트로 재시도
-      console.log('일반 클라이언트로 사용자 등록/업데이트 재시도...');
+      console.log('Retrying user registration/update with default client...');
       const { data: retryData, error: retryError } = await supabase.rpc(
         'create_user_if_not_exists',
         { 
@@ -128,20 +128,20 @@ export const authenticateWithWallet = async (walletAddress: string, authToken: s
       );
       
       if (retryError) {
-        console.error('일반 클라이언트로 재시도 실패:', retryError);
+        console.error('Retry with default client failed:', retryError);
         return { user: null, error: retryError };
       }
       
       if (retryData) {
-        console.log('일반 클라이언트로 사용자 등록/업데이트 성공:', retryData);
+        console.log('User registration/update with default client succeeded:', retryData);
         return { user: retryData[0], error: null };
       }
     }
     
-    console.log('사용자 등록/업데이트 성공:', data);
+    console.log('User registration/update succeeded:', data);
     return { user: data?.[0] || null, error: null };
   } catch (error) {
-    console.error('인증 과정 중 예외 발생:', error);
+    console.error('Exception occurred during authentication:', error);
     return { user: null, error };
   }
 };
@@ -161,13 +161,13 @@ export const updateUserProfile = async (walletAddress: string, authToken: string
     );
     
     if (error) {
-      console.error('사용자 정보 업데이트 실패:', error);
+      console.error('Failed to update user information:', error);
       return { data: null, error };
     }
     
     return { data, error: null };
   } catch (error) {
-    console.error('사용자 정보 업데이트 중 예외 발생:', error);
+    console.error('Exception occurred while updating user information:', error);
     return { data: null, error };
   }
 };
@@ -213,13 +213,13 @@ export const getUserGameResults = async (walletAddress: string, authToken: strin
       .order('created_at', { ascending: false });
     
     if (error) {
-      console.error('사용자 게임 결과 조회 실패:', error);
+      console.error('Failed to fetch user game results:', error);
       return { data: null, error };
     }
     
     return { data, error: null };
   } catch (error) {
-    console.error('사용자 게임 결과 조회 중 예외 발생:', error);
+    console.error('Exception occurred while fetching user game results:', error);
     return { data: null, error };
   }
 };

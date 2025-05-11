@@ -16,7 +16,7 @@ export const getNonce = async (walletAddress: string): Promise<string> => {
     );
 
     if (error) {
-      console.error('사용자 정보 조회/생성 실패:', error);
+      console.error('Failed to fetch/create user information:', error);
       // 오류 발생 시 임시 논스 생성
       return Math.floor(Math.random() * 1000000).toString();
     }
@@ -25,11 +25,11 @@ export const getNonce = async (walletAddress: string): Promise<string> => {
     if (data && data.length > 0 && data[0].nonce) {
       return data[0].nonce;
     } else {
-      console.warn('논스가 없습니다. 임시 논스를 생성합니다.');
+      console.warn('No nonce found. Generating temporary nonce.');
       return Math.floor(Math.random() * 1000000).toString();
     }
   } catch (err) {
-    console.error('논스 조회 중 오류 발생:', err);
+    console.error('Error occurred while fetching nonce:', err);
     // 오류 발생 시 임시 논스 생성
     return Math.floor(Math.random() * 1000000).toString();
   }
@@ -99,13 +99,13 @@ export const updateUserProfile = async (walletAddress: string, username: string)
     );
 
     if (error) {
-      console.error('사용자 정보 업데이트 실패:', error);
+      console.error('Failed to update user information:', error);
       return false;
     }
 
     return true;
   } catch (err) {
-    console.error('사용자 정보 업데이트 중 오류 발생:', err);
+    console.error('Error occurred while updating user information:', err);
     return false;
   }
 };

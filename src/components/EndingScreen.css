@@ -324,3 +324,52 @@ padding-bottom: 5px;
 .result-saved-status span {
   font-size: 1.2rem;
 }
+
+.score-breakdown-text {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.score-formula {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.2rem;
+  background-color: rgba(0, 20, 0, 0.5);
+  padding: 8px 12px;
+  border-radius: 4px;
+  box-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+}
+
+.score-formula .base-score {
+  color: #00ff00;
+  font-weight: bold;
+}
+
+.score-formula .bonus-score {
+  color: #00ffff;
+  font-weight: bold;
+}
+
+.score-formula .operator {
+  color: #ffffff;
+  opacity: 0.7;
+}
+
+.score-formula .multiplier {
+  color: #ffcc00;
+  font-weight: bold;
+}
+
+.score-formula .operator {
+  color: #ffffff;
+  opacity: 0.7;
+}
+
+.score-explanation {
+  margin-top: 5px;
+  font-size: 0.8rem;
+  color: #aaffaa;
+  opacity: 0.7;
+}

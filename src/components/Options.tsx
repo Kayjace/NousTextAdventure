@@ -62,7 +62,7 @@ const Options: React.FC<OptionsProps> = ({ options, handleClick }) => {
           >
             <div className="option-content">
               <div className="option-row">
-                <span className="option-text">{option.text}</span>
+                <span className="option-text">{option.text.replace(/\s*[\(（][^)）]*[\)）]/g, '')}</span>
                 <div className="inline-badges">
                   <span 
                     className="risk-badge"

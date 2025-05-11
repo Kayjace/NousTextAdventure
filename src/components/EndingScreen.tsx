@@ -36,6 +36,52 @@ const EndingScreen: React.FC<EndingScreenProps> = ({
   } = state;
   const { t } = useTranslation(); // Get translation function
   
+  // 엔딩 타입에 따른 가중치 계산
+  const getEndingMultiplier = () => {
+    switch(endingType?.toLowerCase()) {
+      case "heroic victory": return 1.5;
+      case "pyrrhic victory": return 1.3;
+      case "antihero triumph": return 1.2;
+      case "bittersweet resolution": return 1.0;
+      case "tragic downfall": return 0.8;
+      default: return 1.0;
+    }
+  };
+  
+  // 향상된 점수 계산
+  const calculateEnhancedScore = () => {
+    // 기본 점수 요소
+    const decisions = scoreBreakdown?.decisions || 0;
+    const consistency = scoreBreakdown?.consistency || 0;
+    const creativity = scoreBreakdown?.creativity || 0;
+    
+    // 턴 수에 따른 보너스/패널티 (턴 수가 적을수록 높은 점수)
+    const turnCount = state.turnCount || 0;
+    const turnFactor = Math.max(0, 1 - (turnCount / 30)) * 20; // 최대 20점 보너스
+    
+    // 성공률에 따른 보너스
+    const successRate = playerStats?.successRate || 0;
+    const successBonus = (successRate / 100) * 15; // 최대 15점 보너스
+    
+    // 엔딩 타입 가중치
+    const endingMultiplier = getEndingMultiplier();
+    
+    // 최종 점수 계산 (기존 점수 요소 + 보너스 점수) * 엔딩 가중치
+    const baseScore = decisions + consistency + creativity;
+    const bonusScore = turnFactor + successBonus;
+    const finalScore = Math.round((baseScore + bonusScore) * endingMultiplier);
+    
+    return {
+      baseScore,
+      bonusScore,
+      endingMultiplier,
+      finalScore
+    };
+  };
+  
+  // 향상된 점수 계산 결과
+  const enhancedScore = calculateEnhancedScore();
+  
   // Game result saving state
   const [resultSaved, setResultSaved] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -83,7 +129,7 @@ const EndingScreen: React.FC<EndingScreenProps> = ({
       // 이미 저장된 결과가 있고, 점수와 엔딩 타입이 동일하면 중복으로 간주
       if (existingResults && existingResults.length > 0) {
         const isDuplicate = existingResults.some((result: any) => 
-          result.score === overallScore && 
+          result.score === enhancedScore.finalScore && 
           result.ending_type === endingType &&
           Math.abs(new Date(result.created_at).getTime() - Date.now()) < 86400000 // 24시간 이내 저장된 결과
         );
@@ -102,7 +148,8 @@ const EndingScreen: React.FC<EndingScreenProps> = ({
         playerStats,
         turnCount: state.turnCount,
         moralChoices: state.moralChoices,
-        successfulChoices: state.successfulChoices
+        successfulChoices: state.successfulChoices,
+        enhancedScore // 향상된 점수 정보 추가
       };
       
       // Save game result to Supabase using authenticated client
@@ -110,9 +157,11 @@ const EndingScreen: React.FC<EndingScreenProps> = ({
         .from('game_results')
         .insert({
           wallet_address: walletAddress.toLowerCase(),
-          score: overallScore,
+          score: enhancedScore.finalScore, // 향상된 최종 점수 사용
           ending_type: endingType,
           character_name: chosenCharacter,
+          genre: state.chosenGenre,
+          turn_count: state.turnCount || 0, // turn_count 직접 저장
           detailed_stats: detailedStats
         });
         
@@ -221,7 +270,19 @@ const EndingScreen: React.FC<EndingScreenProps> = ({
             <div className="overall-score">
               <h3>{t('Adventure Score')}</h3>
               <div className="score-circle">
-                <span>{overallScore}</span>
+                <span>{enhancedScore.finalScore}</span>
+              </div>
+              <div className="score-breakdown-text">
+                <div className="score-formula">
+                  <span className="base-score">{enhancedScore.baseScore}</span>
+                  <span className="operator">+</span>
+                  <span className="bonus-score">{Math.round(enhancedScore.bonusScore)}</span>
+                  <span className="operator">×</span>
+                  <span className="multiplier">{enhancedScore.endingMultiplier.toFixed(1)}</span>
+                </div>
+                <div className="score-explanation">
+                  <small>기본 + 보너스 × 엔딩 가중치</small>
+                </div>
               </div>
             </div>
             
