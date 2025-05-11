@@ -91,3 +91,100 @@
   font-size: 0.8rem;
   color: #0c0;
 }
+
+.api-key-container {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 1px solid #0f0;
+  border-radius: 8px;
+  color: #0f0;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.api-key-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 1rem;
+  color: #0f0;
+  text-shadow: 0 0 5px #0f0;
+}
+
+.form-group input,
+.form-group select {
+  padding: 0.75rem;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 1px solid #0f0;
+  border-radius: 4px;
+  color: #0f0;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  box-shadow: 0 0 10px #0f0;
+  border-color: #0f0;
+}
+
+.form-group input::placeholder {
+  color: rgba(0, 255, 0, 0.5);
+}
+
+.model-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1em;
+  padding-right: 2.5rem;
+}
+
+button {
+  padding: 0.75rem 1.5rem;
+  background-color: rgba(0, 255, 0, 0.1);
+  border: 1px solid #0f0;
+  border-radius: 4px;
+  color: #0f0;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover:not(:disabled) {
+  background-color: rgba(0, 255, 0, 0.2);
+  box-shadow: 0 0 10px #0f0;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .api-key-container {
+    margin: 1rem;
+    padding: 1rem;
+  }
+  
+  .form-group input,
+  .form-group select,
+  button {
+    font-size: 0.9rem;
+  }
+}

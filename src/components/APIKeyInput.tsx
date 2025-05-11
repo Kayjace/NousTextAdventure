@@ -10,12 +10,21 @@ import { ethers } from 'ethers';
 const APIKeyInput: React.FC = () => {
   const { state, setState } = useContext(AppContext);
   const [apiKey, setApiKey] = useState<string>("");
+  const [selectedModel, setSelectedModel] = useState<string>("Hermes-3-Llama-3.1-70B");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [submitAttempted, setSubmitAttempted] = useState<boolean>(false);
   const [walletConnected, setWalletConnected] = useState<boolean>(false);
+  const [account, setAccount] = useState<string | null>(null);
   
+  const availableModels = [
+    'Hermes-3-Llama-3.1-70B',
+    'DeepHermes-3-Llama-3-8B-Preview',
+    'DeepHermes-3-Mistral-24B-Preview',
+    'Hermes-3-Llama-3.1-405B'
+  ];
+
   // 지갑 연결 상태 확인 함수
   const checkWalletConnection = async () => {
     // 로컬 스토리지에서 현재 연결된 지갑 주소 확인
@@ -113,7 +122,7 @@ const APIKeyInput: React.FC = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          model: 'Hermes-3-Llama-3.1-70B',
+          model: selectedModel,
           messages: [
             { role: 'system', content: 'You are a helpful assistant.' },
             { role: 'user', content: 'hi' }
@@ -161,7 +170,8 @@ const APIKeyInput: React.FC = () => {
         // API 키와 게임 상태 설정
         setState(prevState => ({ 
           ...prevState, 
-          apiKey, 
+          apiKey,
+          selectedModel,
           gameState: "loadOrCreate" 
         }));
         
@@ -193,15 +203,32 @@ const APIKeyInput: React.FC = () => {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="api-input">
-              <input
-                type="text"
-                placeholder={t('Nous API key')}
-                value={apiKey}
-                onChange={(event) => setApiKey(event.target.value)}
-                autoComplete="api-key"
-                required
-                disabled={isLoading}
-              />
+              <div className="form-group">
+                <label htmlFor="apiKey">{t('API Key')}</label>
+                <input
+                  type="password"
+                  id="apiKey"
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  placeholder={t('Enter your API key')}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="modelSelect">{t('Select Model')}</label>
+                <select
+                  id="modelSelect"
+                  value={selectedModel}
+                  onChange={(e) => setSelectedModel(e.target.value)}
+                  className="model-select"
+                >
+                  {availableModels.map((model) => (
+                    <option key={model} value={model}>
+                      {model}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <button 
                 type="submit"
                 disabled={isLoading}
