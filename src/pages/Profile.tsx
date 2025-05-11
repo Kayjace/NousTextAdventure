@@ -70,15 +70,28 @@ const Profile: React.FC = () => {
   const loadUserData = async (address: string) => {
     try {
       setError(null);
-      const { data, error } = await supabase
+      
+      // 로컬 스토리지에서 인증 토큰 가져오기
+      const authToken = localStorage.getItem(`auth_token_${address.toLowerCase()}`);
+      
+      // 인증된 클라이언트 사용 또는 기본 클라이언트로 폴백
+      const client = authToken 
+        ? getAuthenticatedClient(address.toLowerCase(), authToken) 
+        : supabase;
+      
+      // 인증된 클라이언트로 사용자 정보 요청
+      const { data, error } = await client
         .from('users')
         .select('username, twitter_followed')
         .eq('wallet_address', address.toLowerCase())
         .single();
-      const { data: gameResults } = await supabase
+        
+      // 게임 결과도 인증된 클라이언트로 요청
+      const { data: gameResults } = await client
         .from('game_results')
         .select('score, detailed_stats')
         .eq('wallet_address', address.toLowerCase());
+        
       if (gameResults) {
         setGameStats({
           totalGames: gameResults.length,
@@ -87,15 +100,19 @@ const Profile: React.FC = () => {
           highScore: Math.max(...gameResults.map((r: GameResult) => r.score || 0), 0)
         });
       }
+      
       if (data) {
         setUsername(data.username || '');
         setSavedUsername(data.username || '');
         setTwitterFollowed(data.twitter_followed || false);
       }
+      
       if (error) {
+        console.error('Failed to fetch user information:', error);
         setError({ type: 'data', message: 'Failed to fetch user information.' });
       }
     } catch (e) {
+      console.error('An error occurred while fetching data:', e);
       setError({ type: 'unknown', message: 'An error occurred while fetching data.' });
     }
   };
@@ -110,17 +127,30 @@ const Profile: React.FC = () => {
     if (username === savedUsername) return;
     try {
       setUsernameStatus(t('Saving...'));
-      const { error } = await supabase
+      
+      // 로컬 스토리지에서 인증 토큰 가져오기
+      const authToken = localStorage.getItem(`auth_token_${account.toLowerCase()}`);
+      
+      // 인증된 클라이언트 사용 또는 기본 클라이언트로 폴백
+      const client = authToken 
+        ? getAuthenticatedClient(account.toLowerCase(), authToken) 
+        : supabase;
+      
+      // 인증된 클라이언트로 사용자 정보 업데이트
+      const { error } = await client
         .from('users')
         .update({ username })
         .eq('wallet_address', account.toLowerCase());
+        
       if (error) {
+        console.error('Failed to update username:', error);
         setUsernameStatus(t('Save failed'));
       } else {
         setSavedUsername(username);
         setUsernameStatus(t('Saved!'));
       }
-    } catch {
+    } catch (e) {
+      console.error('An error occurred while saving username:', e);
       setUsernameStatus(t('Save failed'));
     }
   };
@@ -134,11 +164,24 @@ const Profile: React.FC = () => {
   const confirmTwitterFollow = async () => {
     if (!account) return;
     setFollowProcessing(true);
-    const { error } = await supabase
+    
+    // 로컬 스토리지에서 인증 토큰 가져오기
+    const authToken = localStorage.getItem(`auth_token_${account.toLowerCase()}`);
+    
+    // 인증된 클라이언트 사용 또는 기본 클라이언트로 폴백
+    const client = authToken 
+      ? getAuthenticatedClient(account.toLowerCase(), authToken) 
+      : supabase;
+    
+    // 인증된 클라이언트로 트위터 팔로우 상태 업데이트
+    const { error } = await client
       .from('users')
       .update({ twitter_followed: true })
       .eq('wallet_address', account.toLowerCase());
-    if (!error) {
+      
+    if (error) {
+      console.error('Failed to update Twitter follow status:', error);
+    } else {
       setTwitterFollowed(true);
       setShowFollowConfirm(false);
     }
